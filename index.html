@@ -1,0 +1,3453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AeroSphere 2006 - Community Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --aero-blue-dark: #003893;
+      --aero-blue-mid: #0a64d6;
+      --aero-blue-light: #5ec5ff;
+      --aero-green-bright: #48d128;
+      --aero-green-deep: #1b8a1e;
+      --aero-glass-bg: rgba(242, 249, 255, 0.78);
+      --aero-glass-border: rgba(255, 255, 255, 0.88);
+      --aero-title-start: #0855dd;
+      --aero-title-mid: #3a93ff;
+      --aero-title-end: #0042b8;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Tahoma', 'Segoe UI', 'Inter', sans-serif;
+      color: #10253f;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-color: #2b8be6;
+      user-select: none;
+    }
+
+    input, textarea, select, [contenteditable="true"] {
+      user-select: text;
+    }
+
+    .pixel-font {
+      font-family: 'Silkscreen', monospace;
+      letter-spacing: -0.02em;
+    }
+
+    /* Frutiger Aero Bliss Sky & Rolling Green Hills Wallpaper */
+    #aero-wallpaper {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      background: linear-gradient(180deg, #0c63d4 0%, #3aa6ff 38%, #9be2ff 64%, #7be33b 65%, #3dc21b 82%, #1d8f12 100%);
+      background-size: cover;
+      background-position: center;
+      overflow: hidden;
+    }
+
+    .hills-svg {
+      position: fixed;
+      bottom: 36px;
+      left: 0;
+      width: 100%;
+      height: 55vh;
+      z-index: -2;
+      pointer-events: none;
+    }
+
+    /* Floating Glossy Water Bubbles */
+    #bubble-layer {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .aero-bubble {
+      position: absolute;
+      bottom: -120px;
+      border-radius: 9999px;
+      background: radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.35) 22%, rgba(125, 219, 255, 0.18) 65%, rgba(255, 255, 255, 0.72) 100%);
+      box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.85), 0 4px 15px rgba(0, 88, 175, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.75);
+      animation: floatUp linear infinite;
+    }
+
+    .aero-bubble::after {
+      content: '';
+      position: absolute;
+      top: 14%;
+      left: 18%;
+      width: 28%;
+      height: 18%;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      transform: rotate(-28deg);
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) translateX(0) scale(0.95);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.9;
+      }
+      50% {
+        transform: translateY(-55vh) translateX(18px) scale(1);
+      }
+      90% {
+        opacity: 0.85;
+      }
+      100% {
+        transform: translateY(-115vh) translateX(-14px) scale(1.04);
+        opacity: 0;
+      }
+    }
+
+    /* Classic Windows XP / Vista Frutiger Aero Glass Window */
+    .xp-window {
+      background: var(--aero-glass-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 2px solid var(--aero-title-start);
+      border-radius: 9px 9px 7px 7px;
+      box-shadow:
+        0 10px 28px rgba(0, 38, 99, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      overflow: hidden;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .xp-titlebar {
+      background: linear-gradient(180deg,
+        #4ca4ff 0%,
+        var(--aero-title-start) 16%,
+        var(--aero-title-mid) 52%,
+        var(--aero-title-end) 88%,
+        #002d80 100%);
+      padding: 5px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #002875;
+      text-shadow: 0 1px 2px rgba(0, 20, 65, 0.85);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    /* Iconic 2000s Window Controls + Red Close 'X' */
+    .win-controls {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .win-btn {
+      width: 21px;
+      height: 21px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.82);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 1px 2px rgba(0, 0, 0, 0.35);
+      transition: filter 0.12s ease, transform 0.08s ease;
+    }
+
+    .win-btn:hover {
+      filter: brightness(1.14);
+    }
+
+    .win-btn:active {
+      transform: translateY(1px);
+    }
+
+    .win-btn-min, .win-btn-max {
+      background: linear-gradient(180deg, #6dbaff 0%, #1d74e8 50%, #0d52bd 100%);
+    }
+
+    .win-btn-close {
+      background: linear-gradient(180deg, #ff8a7a 0%, #e6321e 48%, #b81406 100%);
+      border-color: #ffd4cf;
+    }
+
+    /* Glossy Aqua Pill & Aero Buttons */
+    .aqua-btn {
+      background: linear-gradient(180deg, #ffffff 0%, #d4eeff 46%, #8bcaff 52%, #bfe6ff 100%);
+      border: 1px solid #2b74b8;
+      border-radius: 6px;
+      color: #092c54;
+      font-weight: 700;
+      font-size: 12px;
+      padding: 6px 13px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 2px 4px rgba(0, 56, 128, 0.18);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .aqua-btn:hover {
+      background: linear-gradient(180deg, #ffffff 0%, #e4f5ff 46%, #a6d8ff 52%, #d4eeff 100%);
+      box-shadow: inset 0 1px 0 #ffffff, 0 0 8px rgba(77, 184, 255, 0.65);
+    }
+
+    .aqua-btn:active {
+      transform: translateY(1px);
+    }
+
+    .aqua-btn-green {
+      background: linear-gradient(180deg, #c9ffba 0%, #63db44 48%, #2eb312 52%, #59d638 100%);
+      border: 1px solid #166e08;
+      color: #062b02;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+
+    .aqua-btn-green:hover {
+      filter: brightness(1.07);
+      box-shadow: inset 0 1px 0 #ffffff, 0 0 10px rgba(82, 232, 48, 0.7);
+    }
+
+    .aqua-btn-blue {
+      background: linear-gradient(180deg, #9ad6ff 0%, #2b8eff 48%, #0763d4 52%, #2989f7 100%);
+      border: 1px solid #043e8a;
+      color: #ffffff;
+      text-shadow: 0 1px 1px rgba(0, 22, 66, 0.75);
+    }
+
+    .aqua-btn-blue:hover {
+      filter: brightness(1.08);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 0 10px rgba(45, 155, 255, 0.7);
+    }
+
+    .aqua-btn-red {
+      background: linear-gradient(180deg, #ffb8b0 0%, #f04632 48%, #c21b08 52%, #e63925 100%);
+      border: 1px solid #7d0c00;
+      color: #ffffff;
+      text-shadow: 0 1px 1px rgba(60, 0, 0, 0.75);
+    }
+
+    /* Glossy Inputs */
+    .aero-input {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid #6ba3d6;
+      border-top-color: #3d75ab;
+      border-radius: 5px;
+      padding: 6px 10px;
+      font-size: 13px;
+      color: #0f253d;
+      box-shadow: inset 0 1px 3px rgba(13, 59, 107, 0.16);
+      outline: none;
+      width: 100%;
+    }
+
+    .aero-input:focus {
+      border-color: #1680eb;
+      box-shadow: inset 0 1px 3px rgba(13, 59, 107, 0.12), 0 0 0 2px rgba(58, 166, 255, 0.35);
+    }
+
+    /* Windows XP / Vista Bottom Taskbar */
+    .xp-taskbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 38px;
+      z-index: 50;
+      background: linear-gradient(180deg, #4298ff 0%, #1968d9 14%, #0d4eb8 55%, #093b94 92%, #05286b 100%);
+      border-top: 1px solid #7cc2ff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-right: 8px;
+      box-shadow: 0 -2px 10px rgba(0, 25, 70, 0.35);
+    }
+
+    .xp-start-btn {
+      height: 38px;
+      padding: 0 18px 0 12px;
+      border-radius: 0 16px 14px 0;
+      background: radial-gradient(circle at 35% 25%, #9eff87 0%, #48c928 45%, #1f8f0d 85%, #136306 100%);
+      border-right: 2px solid #0d4f04;
+      border-top: 1px solid #bfffad;
+      box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.75), 2px 0 8px rgba(0, 0, 0, 0.35);
+      color: #ffffff;
+      font-weight: 700;
+      font-style: italic;
+      font-size: 15px;
+      text-shadow: 0 1px 2px rgba(0, 40, 0, 0.85);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: filter 0.15s ease;
+    }
+
+    .xp-start-btn:hover {
+      filter: brightness(1.08);
+    }
+
+    .taskbar-tab {
+      height: 28px;
+      padding: 0 12px;
+      border-radius: 4px;
+      background: linear-gradient(180deg, #5cb0ff 0%, #2478e8 50%, #1559bd 100%);
+      border: 1px solid #0b3c8a;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      max-width: 170px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .taskbar-tab.active {
+      background: linear-gradient(180deg, #134a9e 0%, #0d3980 60%, #1c5ec2 100%);
+      box-shadow: inset 0 2px 4px rgba(0, 15, 45, 0.65);
+      border-color: #072963;
+    }
+
+    .xp-tray {
+      height: 28px;
+      padding: 0 12px;
+      border-radius: 4px;
+      background: linear-gradient(180deg, #1989e6 0%, #0e6ec4 50%, #0a569e 100%);
+      border: 1px solid #073e78;
+      box-shadow: inset 0 1px 2px rgba(0, 25, 60, 0.45);
+      color: #ffffff;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Staff Role Badges */
+    .badge-owner {
+      background: linear-gradient(180deg, #fff3a1 0%, #f5b800 50%, #cc8800 100%);
+      border: 1px solid #8a5800;
+      color: #3d2200;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65);
+    }
+
+    .badge-admin {
+      background: linear-gradient(180deg, #ffb8b8 0%, #e03131 50%, #a61111 100%);
+      border: 1px solid #6e0808;
+      color: #ffffff;
+      text-shadow: 0 1px 1px rgba(60, 0, 0, 0.7);
+    }
+
+    .badge-moderator {
+      background: linear-gradient(180deg, #b5f5c8 0%, #24b351 50%, #117a32 100%);
+      border: 1px solid #094d1e;
+      color: #ffffff;
+      text-shadow: 0 1px 1px rgba(0, 45, 15, 0.7);
+    }
+
+    /* Inline Owner Edit Mode Highlight */
+    body.inline-edit-active [data-editable-key] {
+      outline: 2px dashed #ff9900;
+      outline-offset: 2px;
+      background-color: rgba(255, 248, 214, 0.85) !important;
+      color: #10253f !important;
+      cursor: text;
+      border-radius: 3px;
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #dceeff;
+      border-left: 1px solid #9cc7f0;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(90deg, #8ec8ff 0%, #4ba0f5 50%, #2b82de 100%);
+      border: 1px solid #1d64b3;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="pb-14">
+
+  <!-- Frutiger Aero Sky & Rolling Hills Background -->
+  <div id="aero-wallpaper">
+    <!-- Crisp Pixel-Art Clouds -->
+    <svg class="absolute top-8 left-[8%] w-28 h-14 opacity-90 pointer-events-none" viewBox="0 0 28 14" shape-rendering="crispEdges">
+      <rect x="8" y="2" width="10" height="2" fill="#ffffff"/>
+      <rect x="5" y="4" width="16" height="2" fill="#ffffff"/>
+      <rect x="2" y="6" width="23" height="4" fill="#ffffff"/>
+      <rect x="1" y="10" width="25" height="2" fill="#e6f5ff"/>
+      <rect x="3" y="12" width="21" height="1" fill="#bfe4ff"/>
+    </svg>
+    <svg class="absolute top-16 right-[14%] w-32 h-16 opacity-85 pointer-events-none" viewBox="0 0 28 14" shape-rendering="crispEdges">
+      <rect x="10" y="2" width="9" height="2" fill="#ffffff"/>
+      <rect x="6" y="4" width="16" height="2" fill="#ffffff"/>
+      <rect x="3" y="6" width="22" height="4" fill="#ffffff"/>
+      <rect x="1" y="10" width="26" height="2" fill="#e6f5ff"/>
+    </svg>
+  </div>
+
+  <!-- Rolling Lush Green Bliss Hills SVG -->
+  <svg id="default-hills-svg" class="hills-svg" viewBox="0 0 1440 500" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="hillBack" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#7ce838"/>
+        <stop offset="55%" stop-color="#48c41b"/>
+        <stop offset="100%" stop-color="#258f0e"/>
+      </linearGradient>
+      <linearGradient id="hillFront" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#9cf74d"/>
+        <stop offset="40%" stop-color="#58d624"/>
+        <stop offset="100%" stop-color="#1e800a"/>
+      </linearGradient>
+      <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="rgba(255,255,255,0.85)"/>
+        <stop offset="55%" stop-color="rgba(204,255,179,0.28)"/>
+        <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+      </radialGradient>
+    </defs>
+    <ellipse cx="420" cy="180" rx="480" ry="180" fill="url(#sunGlow)"/>
+    <path d="M0,210 C320,90 680,290 1080,170 C1260,115 1370,145 1440,175 L1440,500 L0,500 Z" fill="url(#hillBack)"/>
+    <path d="M0,275 C380,375 760,130 1440,250 L1440,500 L0,500 Z" fill="url(#hillFront)"/>
+  </svg>
+
+  <!-- Animated Translucent Soap Bubbles Layer -->
+  <div id="bubble-layer"></div>
+
+  <!-- Top Desktop Header / Browser-Style Command Bar -->
+  <header class="max-w-7xl mx-auto px-3 sm:px-5 pt-3 pb-2">
+    <div class="xp-window">
+      <div class="xp-titlebar">
+        <div class="flex items-center gap-2 min-w-0">
+          <!-- 16x16 Crisp Pixel Globe Icon -->
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 16 16" shape-rendering="crispEdges">
+            <rect x="5" y="1" width="6" height="14" fill="#35c9ff"/>
+            <rect x="3" y="3" width="10" height="10" fill="#35c9ff"/>
+            <rect x="1" y="5" width="14" height="6" fill="#35c9ff"/>
+            <rect x="5" y="2" width="4" height="3" fill="#63e635"/>
+            <rect x="4" y="5" width="3" height="4" fill="#63e635"/>
+            <rect x="9" y="7" width="4" height="4" fill="#63e635"/>
+            <rect x="7" y="11" width="3" height="3" fill="#63e635"/>
+            <rect x="5" y="2" width="2" height="2" fill="#ffffff"/>
+          </svg>
+          <span class="truncate" data-editable-key="browserWindowTitle">AeroSphere Internet Explorer - Community Portal 2006</span>
+        </div>
+        <div class="win-controls shrink-0">
+          <button type="button" class="win-btn win-btn-min" title="Minimize" onclick="showSystemDialog('Window State', 'Main portal window is docked to your desktop.')">
+            <svg width="9" height="9" viewBox="0 0 9 9"><rect x="1" y="6" width="7" height="2" fill="#fff"/></svg>
+          </button>
+          <button type="button" class="win-btn win-btn-max" title="Maximize" onclick="toggleCompactView()">
+            <svg width="9" height="9" viewBox="0 0 9 9"><rect x="1" y="1" width="7" height="7" fill="none" stroke="#fff" stroke-width="1.5"/></svg>
+          </button>
+          <button type="button" class="win-btn win-btn-close" title="Close" onclick="showSystemDialog('System Notice', 'Main community desktop cannot be closed while active.')">
+            <svg width="9" height="9" viewBox="0 0 9 9"><path d="M1.5 1.5L7.5 7.5M7.5 1.5L1.5 7.5" stroke="#fff" stroke-width="1.8"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Glossy Navigation & Address Bar -->
+      <div class="p-3 bg-gradient-to-b from-[#eef7ff] to-[#d6ecff] border-b border-[#98c4eb] flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <!-- Custom Site Logo Box -->
+          <div id="site-logo-container" class="w-12 h-12 rounded-xl bg-gradient-to-b from-[#8ce0ff] via-[#1b85f5] to-[#0b4bb3] border-2 border-white shadow-md flex items-center justify-center overflow-hidden shrink-0">
+            <svg id="default-logo-svg" class="w-8 h-8" viewBox="0 0 16 16" shape-rendering="crispEdges">
+              <rect x="4" y="1" width="8" height="14" fill="#ffffff"/>
+              <rect x="2" y="3" width="12" height="10" fill="#ffffff"/>
+              <rect x="4" y="3" width="8" height="10" fill="#29a8ff"/>
+              <rect x="5" y="4" width="3" height="3" fill="#8cf542"/>
+              <rect x="8" y="7" width="3" height="4" fill="#8cf542"/>
+              <rect x="5" y="3" width="2" height="2" fill="#ffffff"/>
+            </svg>
+            <img id="custom-logo-img" src="" alt="Site Logo" class="hidden w-full h-full object-cover" />
+          </div>
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <h1 class="text-xl sm:text-2xl font-bold text-[#06367a] tracking-tight" data-editable-key="siteTitle">AeroSphere</h1>
+              <span class="pixel-font text-[10px] px-2 py-0.5 rounded bg-[#1877e8] text-white border border-white shadow-sm" data-editable-key="siteVersionBadge">VER 2.6 AERO</span>
+            </div>
+            <p class="text-xs sm:text-sm text-[#23548c]" data-editable-key="siteTagline">Glossy 2000s Community Desktop &amp; Social Network</p>
+          </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" onclick="switchMainView('feed')" id="nav-btn-feed" class="aqua-btn aqua-btn-blue">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="2" y="2" width="12" height="12" fill="#fff"/><rect x="4" y="4" width="8" height="2" fill="#0a64d6"/><rect x="4" y="7" width="8" height="2" fill="#0a64d6"/><rect x="4" y="10" width="5" height="2" fill="#0a64d6"/></svg>
+            <span data-editable-key="navFeedLabel">Community Feed</span>
+          </button>
+
+          <button type="button" onclick="switchMainView('members')" id="nav-btn-members" class="aqua-btn">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="5" y="2" width="6" height="5" fill="#1877e8"/><rect x="3" y="8" width="10" height="6" fill="#35a832"/></svg>
+            <span data-editable-key="navMembersLabel">Member Directory</span>
+          </button>
+
+          <button type="button" onclick="switchMainView('friends-dms')" id="nav-btn-friends" class="aqua-btn relative">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="2" y="3" width="12" height="9" fill="#9eff7a" stroke="#166e08"/><rect x="4" y="6" width="8" height="2" fill="#0a64d6"/></svg>
+            <span data-editable-key="navFriendsLabel">Friends &amp; DMs</span>
+            <span id="dm-unread-badge" class="hidden ml-1 px-1.5 py-0.2 bg-[#e02414] text-white text-[10px] rounded-full border border-white">0</span>
+          </button>
+
+          <button type="button" onclick="openMyProfileView()" id="nav-btn-myprofile" class="hidden aqua-btn">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="5" y="2" width="6" height="5" fill="#0a64d6"/><rect x="3" y="8" width="10" height="6" fill="#5ec5ff"/></svg>
+            <span data-editable-key="navMyProfileLabel">My Profile</span>
+          </button>
+
+          <button type="button" onclick="switchMainView('inbox')" id="nav-btn-inbox" class="aqua-btn relative">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="1" y="3" width="14" height="10" fill="#ffd43b" stroke="#8a5a00"/><path d="M2 4L8 9L14 4" stroke="#8a5a00" fill="none"/></svg>
+            <span data-editable-key="navInboxLabel">System Notices</span>
+            <span id="inbox-unread-badge" class="hidden ml-1 px-1.5 py-0.2 bg-[#e02414] text-white text-[10px] rounded-full border border-white">0</span>
+          </button>
+
+          <!-- Staff Studio Button (STRICTLY hidden unless user is Owner/Admin/Moderator) -->
+          <button type="button" onclick="switchMainView('staff')" id="nav-btn-staff" class="hidden aqua-btn aqua-btn-green">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="3" y="2" width="10" height="12" fill="#0c4da2"/><rect x="5" y="4" width="6" height="4" fill="#9eff7a"/><rect x="5" y="9" width="6" height="2" fill="#ffffff"/></svg>
+            <span data-editable-key="navStaffLabel">Staff Studio</span>
+          </button>
+
+          <!-- Owner Live Edit Site Button (STRICTLY visible only to laneexx / Owner) -->
+          <button type="button" onclick="switchMainView('owner-customizer')" id="nav-btn-owner" class="hidden aqua-btn" style="background: linear-gradient(180deg, #fff6bd 0%, #ffd23f 50%, #e69d00 100%); border-color: #8a5a00;">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="2" y="11" width="3" height="3" fill="#333"/><rect x="5" y="8" width="3" height="3" fill="#e65100"/><rect x="8" y="5" width="3" height="3" fill="#ff9800"/><rect x="11" y="2" width="3" height="3" fill="#ffd54f"/></svg>
+            <span data-editable-key="navOwnerEditLabel">Edit Site</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main 3-Column Frutiger Aero Desktop Grid -->
+  <main class="max-w-7xl mx-auto px-3 sm:px-5 grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+
+    <!-- LEFT COLUMN: User Account Passport & Unified Search (Hashtags & Users) -->
+    <aside class="lg:col-span-3 space-y-4">
+
+      <!-- User Account Window -->
+      <section class="xp-window" id="win-account">
+        <div class="xp-titlebar">
+          <div class="flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="5" y="2" width="6" height="5" fill="#fff"/><rect x="3" y="8" width="10" height="6" fill="#9eff7a"/></svg>
+            <span data-editable-key="accountWinTitle">User Passport</span>
+          </div>
+          <div class="win-controls">
+            <button type="button" class="win-btn win-btn-close" onclick="showSystemDialog('User Passport', 'Account module stays pinned for quick session access.')">
+              <svg width="8" height="8" viewBox="0 0 9 9"><path d="M1.5 1.5L7.5 7.5M7.5 1.5L1.5 7.5" stroke="#fff" stroke-width="1.8"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="p-3.5">
+          <!-- Logged Out State -->
+          <div id="account-logged-out" class="space-y-3">
+            <div class="p-2.5 rounded-lg bg-white/80 border border-[#9ac6ed] text-center">
+              <p class="text-xs font-bold text-[#0a3c7d]" data-editable-key="guestWelcomeHeading">Welcome, Visitor</p>
+              <p class="text-[11px] text-[#356396] mt-1" data-editable-key="guestWelcomeSubtext">Sign in or create an account to post updates, customize your status, and join the community.</p>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" onclick="openAuthModal('login')" class="aqua-btn aqua-btn-blue w-full">
+                <span data-editable-key="loginBtnLabel">Log In</span>
+              </button>
+              <button type="button" onclick="openAuthModal('register')" class="aqua-btn aqua-btn-green w-full">
+                <span data-editable-key="registerBtnLabel">Sign Up</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Logged In State -->
+          <div id="account-logged-in" class="hidden space-y-3">
+            <div class="flex items-center gap-3 p-2 rounded-lg bg-white/85 border border-[#96c4ed] shadow-sm">
+              <div class="w-14 h-14 rounded-lg border-2 border-[#3b93eb] bg-gradient-to-b from-[#d9f0ff] to-[#87c5ff] overflow-hidden shrink-0 flex items-center justify-center shadow">
+                <img id="current-user-avatar" src="" alt="Profile" class="w-full h-full object-cover" />
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span id="current-user-displayname" class="font-bold text-sm text-[#082f63] truncate"></span>
+                  <span id="current-user-role-badge"></span>
+                </div>
+                <p id="current-user-username" class="text-[11px] text-[#3c6ba1] font-mono truncate"></p>
+                <div class="mt-1 flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-[#36c918] border border-[#146605] inline-block shrink-0"></span>
+                  <span id="current-user-status-text" class="text-[11px] text-[#1a497d] italic truncate">No status set</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Custom Freeform Status Input (No Presets) -->
+            <div class="space-y-1.5 bg-white/70 p-2.5 rounded-lg border border-[#a8cfF2]">
+              <label class="block text-[11px] font-bold text-[#0c4185]" data-editable-key="customStatusLabel">Custom Status Message:</label>
+              <div class="flex gap-1.5">
+                <input type="text" id="custom-status-input" maxlength="80" placeholder="Type your own status..." class="aero-input !py-1 !text-xs" />
+                <button type="button" onclick="updateCustomStatus()" class="aqua-btn !py-1 !px-2.5 shrink-0">Save</button>
+              </div>
+            </div>
+
+            <!-- Quick Social Stats -->
+            <div class="grid grid-cols-3 gap-1 text-center bg-white/80 p-1.5 rounded-lg border border-[#a8cff2] text-[11px]">
+              <button type="button" onclick="openMyProfileView('friends')" class="hover:bg-[#e1f1ff] rounded p-1 transition">
+                <div id="passport-friends-count" class="font-bold text-[#073778]">0</div>
+                <div class="text-[10px] text-[#3c6ba1]">Friends</div>
+              </button>
+              <button type="button" onclick="openMyProfileView('followers')" class="hover:bg-[#e1f1ff] rounded p-1 transition border-x border-[#cde5fa]">
+                <div id="passport-followers-count" class="font-bold text-[#073778]">0</div>
+                <div class="text-[10px] text-[#3c6ba1]">Followers</div>
+              </button>
+              <button type="button" onclick="openMyProfileView('following')" class="hover:bg-[#e1f1ff] rounded p-1 transition">
+                <div id="passport-following-count" class="font-bold text-[#073778]">0</div>
+                <div class="text-[10px] text-[#3c6ba1]">Following</div>
+              </button>
+            </div>
+
+            <!-- Profile Picture & Account Actions -->
+            <div class="grid grid-cols-2 gap-1.5">
+              <button type="button" onclick="openMyProfileView()" class="aqua-btn aqua-btn-blue w-full !text-[11px]">
+                <span>My Profile</span>
+              </button>
+              <button type="button" onclick="openProfileModal()" class="aqua-btn w-full !text-[11px]">
+                <span data-editable-key="editProfileBtnLabel">Edit Profile</span>
+              </button>
+            </div>
+            <button type="button" onclick="logoutUser()" class="aqua-btn aqua-btn-red w-full !text-[11px]">
+              <span data-editable-key="logoutBtnLabel">Log Off</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Unified Search Window (Hashtags & Users) -->
+      <section class="xp-window" id="win-search">
+        <div class="xp-titlebar">
+          <div class="flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" shape-rendering="crispEdges">
+              <rect x="3" y="2" width="6" height="2" fill="#ffffff"/>
+              <rect x="2" y="4" width="2" height="4" fill="#ffffff"/>
+              <rect x="8" y="4" width="2" height="4" fill="#ffffff"/>
+              <rect x="3" y="8" width="6" height="2" fill="#ffffff"/>
+              <rect x="9" y="9" width="2" height="2" fill="#9eff7a"/>
+              <rect x="11" y="11" width="3" height="3" fill="#9eff7a"/>
+            </svg>
+            <span data-editable-key="searchWinTitle">Search Community</span>
+          </div>
+          <div class="win-controls">
+            <button type="button" class="win-btn win-btn-close" title="Clear Search" onclick="clearUnifiedSearch()">
+              <svg width="8" height="8" viewBox="0 0 9 9"><path d="M1.5 1.5L7.5 7.5M7.5 1.5L1.5 7.5" stroke="#fff" stroke-width="1.8"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="p-3 space-y-2.5">
+          <div class="flex gap-1.5">
+            <input
+              type="text"
+              id="global-search-input"
+              oninput="handleSearchInput(this.value)"
+              placeholder="Search #hashtags or users..."
+              class="aero-input !py-1.5 !text-xs"
+            />
+            <button type="button" id="clear-search-btn" onclick="clearUnifiedSearch()" class="hidden aqua-btn !py-1 !px-2 !text-[11px] shrink-0">Clear</button>
+          </div>
+
+          <div id="active-filter-banner" class="hidden items-center justify-between gap-2 px-2.5 py-1.5 rounded bg-[#d4ecff] border border-[#7cb8f0] text-[11px] text-[#083b80]">
+            <span id="active-filter-label" class="font-bold truncate"></span>
+            <button type="button" onclick="clearUnifiedSearch()" class="text-[#c71d0e] font-bold hover:underline shrink-0">Reset</button>
+          </div>
+
+          <div id="search-results-panel" class="space-y-2">
+            <p class="text-[11px] text-[#3a699c]" data-editable-key="searchHelperText">Type a #hashtag to filter posts or enter a username to find members.</p>
+          </div>
+        </div>
+      </section>
+
+    </aside>
+
+    <!-- CENTER COLUMN: Main Dynamic Workspace (Feed / Directory / Inbox / Staff Studio / Owner Customizer) -->
+    <section class="lg:col-span-6 space-y-4">
+
+      <!-- VIEW 1: COMMUNITY FEED -->
+      <div id="view-feed" class="space-y-4">
+        <!-- Post Composer Window (Visible when logged in) -->
+        <div id="post-composer-window" class="xp-window hidden">
+          <div class="xp-titlebar">
+            <div class="flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="2" y="2" width="12" height="12" fill="#fff"/><rect x="4" y="5" width="8" height="2" fill="#24b351"/><rect x="4" y="9" width="6" height="2" fill="#1877e8"/></svg>
+              <span data-editable-key="composerWinTitle">Create New Post</span>
+            </div>
+            <div class="win-controls">
+              <button type="button" class="win-btn win-btn-close" onclick="resetPostComposer()">
+                <svg width="8" height="8" viewBox="0 0 9 9"><path d="M1.5 1.5L7.5 7.5M7.5 1.5L1.5 7.5" stroke="#fff" stroke-width="1.8"/></svg>
+              </button>
+            </div>
+          </div>
+          <form onsubmit="submitNewPost(event)" class="p-3.5 space-y-3">
+            <textarea id="post-content-input" rows="3" placeholder="Write something to the community... Include #hashtags inline or add extra tags below." class="aero-input resize-none" required></textarea>
+
+            <!-- Dedicated Hashtags Input (Optional, combined with inline #hashtags) -->
+            <div class="space-y-1">
+              <label for="post-extra-tags-input" class="block text-[11px] font-bold text-[#0c4185]" data-editable-key="extraTagsLabel">Additional Hashtags (Optional):</label>
+              <input type="text" id="post-extra-tags-input" placeholder="#frutiger #2006 #sunset" class="aero-input !py-1.5 !text-xs" />
+            </div>
+
+            <!-- Photo & Video Attachment Staging Box (File Picker + Drag-and-Drop) -->
+            <div
+              id="post-media-dropzone"
+              ondragover="handleMediaDragOver(event)"
+              ondragleave="handleMediaDragLeave(event)"
+              ondrop="handleMediaDrop(event)"
+              class="p-2.5 rounded-lg bg-white/75 border border-[#9ec8ed] transition-colors space-y-2.5"
+            >
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <span class="text-xs font-bold text-[#0c4185]" data-editable-key="attachPhotoLabel">Upload Photos and/or Videos (Optional):</span>
+                <div class="flex flex-wrap items-center gap-2">
+                  <label class="aqua-btn !py-1 !px-2.5 !text-[11px] cursor-pointer">
+                    <span>Choose Photo / Video</span>
+                    <input type="file" id="post-media-files" accept="image/*,video/*" multiple onchange="handlePostMediaSelection(event)" class="hidden" />
+                  </label>
+                  <button type="button" id="clear-all-media-btn" onclick="clearAllStagedMedia()" class="hidden aqua-btn aqua-btn-red !py-1 !px-2 !text-[11px]">
+                    Clear All
+                  </button>
+                </div>
+              </div>
+
+              <p id="post-media-drop-hint" class="text-[11px] text-[#3b6a9e]">
+                Select or drag and drop image/* or video/* files from your device (photos and videos can be combined).
+              </p>
+
+              <div id="post-media-notice" class="hidden p-2 rounded bg-[#fff4d6] border border-[#e0a800] text-[11px] font-semibold text-[#664600]"></div>
+
+              <!-- Staged Photo & Video Preview Grid -->
+              <div id="post-media-preview-grid" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1"></div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="text-[11px] text-[#3b6a9e]">Tip: Use #topic in your post or extra hashtags field to tag your post.</span>
+              <button type="submit" class="aqua-btn aqua-btn-green">
+                <span data-editable-key="publishPostBtnLabel">Publish Post</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Feed Stream Window -->
+        <div class="xp-window">
+          <div class="xp-titlebar">
+            <div class="flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="2" y="2" width="12" height="12" fill="#9eff7a"/><rect x="4" y="4" width="8" height="8" fill="#0a64d6"/></svg>
+              <span data-editable-key="feedWinTitle">Community Stream</span>
+            </div>
+            <div class="win-controls">
+              <button type="button" class="win-btn win-btn-close" onclick="clearTagFilter()">
+                <svg width="8" height="8" viewBox="0 0 9 9"><path d="M1.5 1.5L7.5 7.5M7.5 1.5L1.5 7.5" stroke="#fff" stroke-width="1.8"/></svg>
+              </button>
+            </div>
+          </div>
+          <div id="posts-feed-container" class="p-3.5 space-y-3.5">
+            <!-- Real posts rendered here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 2: MEMBER DIRECTORY -->
+      <div id="view-members" class="hidden space-y-4">
+        <div class="xp-window">
+          <div class="xp-titlebar">
+            <div class="flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="5" y="2" width="6" height="5" fill="#fff"/><rect x="3" y="8" width="10" height="6" fill="#9eff7a"/></svg>
+              <span data-editable-key="directoryWinTitle">Registered Members Directory</span>
+            </div>
+            <div class="win-controls">
+              <button type="button" class="win-btn win-btn-close" onclick="switchMainView('feed')">
+                <svg width="8" height="8" viewBox="0 0 9 9"><path d="M1.5 1.5L7.5 7.5M7.5 1.5L1.5 7.5" stroke="#fff" stroke-width="1.8"/></svg>
+              </button>
+            </div>
+          </div>
+          <div id="members-directory-list" class="p-3.5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- Registered members rendered here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 3: SYSTEM NOTICES INBOX (Anonymous Staff-to-User 'Important:' Messages) -->
+      <div id="view-inbox" class="hidden space-y-4">
+        <div class="xp-window">
+          <div class="xp-titlebar">
+            <div class="flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="1" y="3" width="14" height="10" fill="#ffd43b"/><path d="M2 4L8 9L14 4" stroke="#7a4e00" fill="none"/></svg>
+              <span data-editable-key="inboxWinTitle">System Notices &amp; Important Alerts</span>
+            </div>
+            <div class="win-controls">
+              <button type="button" class="win-btn win-btn-close" onclick="switchMainView('feed')">
+                <svg width="8" height="8" viewBox="0 0 9 9"><path d="M1.5 1.5L7.5 7.5M7.5 1.5L1.5 7.5" stroke="#fff" stroke-width="1.8"/></svg>
+              </button>
+            </div>
+          </div>
+          <div id="user-inbox-container" class="p-3.5 space-y-2.5">
+            <!-- Anonymous staff messages rendered as "Important: ..." -->
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 6: MY PROFILE (Bio, Avatar, Status, Followers, Following, Friends) -->
+      <div id="view-my-profile" class="hidden space-y-4">
+        <div class="xp-window">
+          <div class="xp-titlebar">
+            <div class="flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="5" y="2" width="6" height="5" fill="#fff"/><rect x="3" y="8" width="10" height="6" fill="#5ec5ff"/></svg>
+              <span>My User Profile &amp; Connections</span>
+            </div>
+            <div class="win-controls">
+              <button type="button" class="win-btn win-btn-close" onclick="switchMainView('feed')">
+                <svg width="8" height="8" viewBox="0 0 9 9"><path d="M1.5 1.5L7.5 7.5M7.5 1.5L1.5 7.5" stroke="#fff" stroke-width="1.8"/></svg>
+              </button>
+            </div>
+          </div>
+          <div id="my-profile-container" class="p-4 space-y-4">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 7: FRIENDS & PRIVATE DMs -->
+      <div id="view-friends-dms" class="hidden space-y-4">
+        <div class="xp-window">
+          <div class="xp-titlebar">
+            <div class="flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="2" y="3" width="12" height="9" fill="#9eff7a"/><rect x="4" y="6" width="8" height="2" fill="#003893"/></svg>
+              <span>Friends &amp; Private Direct Messages</span>
+            </div>
+            <div class="win-controls">
+              <button type="button" class="win-btn win-btn-close" onclick="switchMainView('feed')">
+                <svg width="8" height="8" viewBox="0 0 9 9"><path d="M1.5 1.5L7.5 7.5M7.5 1.5L1.5 7.5" stroke="#fff" stroke-width="1.8"/></svg>
+              </button>
+            </div>
+          </div>
+          <div id="friends-dms-container" class="p-3.5">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 4: EXCLUSIVE STAFF STUDIO (Owner, Admin, Moderator ONLY) -->
+      <div id="view-staff" class="hidden space-y-4">
+        <div class="xp-window">
+          <div class="xp-titlebar">
+            <div class="flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="2" y="2" width="12" height="12" fill="#9eff7a"/><rect x="4" y="4" width="8" height="8" fill="#003893"/></svg>
+              <span data-editable-key="staffStudioTitle">Staff Studio - Moderation &amp; Control Center</span>
+            </div>
+            <div class="win-controls">
+              <button type="button" class="win-btn win-btn-close" onclick="switchMainView('feed')">
+                <svg width="8" height="8" viewBox="0 0 9 9"><path d="M1.5 1.5L7.5 7.5M7.5 1.5L1.5 7.5" stroke="#fff" stroke-width="1.8"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="p-4 space-y-5">
+            <!-- 1. Post Anonymous Pinboard Announcement -->
+            <div class="p-3.5 rounded-lg bg-white/85 border border-[#8abcf0] space-y-2.5">
+              <h3 class="text-sm font-bold text-[#073a80] border-b border-[#c5e1fa] pb-1">1. Post Anonymous Pinboard Announcement</h3>
+              <p class="text-[11px] text-[#356396]">Announcements appear publicly on the Pinboard without any staff username attached.</p>
+              <form onsubmit="submitPinboardAnnouncement(event)" class="space-y-2">
+                <input type="text" id="pinboard-title-input" placeholder="Announcement headline (e.g., Scheduled Maintenance or New Feature)" class="aero-input !text-xs" required />
+                <textarea id="pinboard-body-input" rows="2" placeholder="Announcement message..." class="aero-input !text-xs resize-none" required></textarea>
+                <button type="submit" class="aqua-btn aqua-btn-blue">Post Anonymous Announcement</button>
+              </form>
+            </div>
+
+            <!-- 2. Send Anonymous 'Important:' Private Message to User -->
+            <div class="p-3.5 rounded-lg bg-white/85 border border-[#8abcf0] space-y-2.5">
+              <h3 class="text-sm font-bold text-[#073a80] border-b border-[#c5e1fa] pb-1">2. Send Anonymous Private Staff Notice</h3>
+              <p class="text-[11px] text-[#356396]">Your identity is hidden. The recipient receives this strictly formatted as: <strong>Important: [your message]</strong></p>
+              <form onsubmit="sendAnonymousStaffNotice(event)" class="space-y-2">
+                <select id="staff-notice-recipient" class="aero-input !text-xs" required>
+                  <option value="">-- Select Registered User --</option>
+                </select>
+                <textarea id="staff-notice-message" rows="2" placeholder="Write private warning or notice..." class="aero-input !text-xs resize-none" required></textarea>
+                <button type="submit" class="aqua-btn aqua-btn-green">Send Anonymous Important Notice</button>
+              </form>
+            </div>
+
+            <!-- 2B. Manage Sent System Notices (Staff Can Delete Any System Notice Sent to Users) -->
+            <div class="p-3.5 rounded-lg bg-white/85 border border-[#8abcf0] space-y-2.5">
+              <h3 class="text-sm font-bold text-[#073a80] border-b border-[#c5e1fa] pb-1">Sent System Notices Log (Staff Moderation)</h3>
+              <p class="text-[11px] text-[#356396]">View or delete any anonymous system messages sent to users.</p>
+              <div id="staff-sent-notices-list" class="space-y-2 max-h-60 overflow-y-auto pr-1">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+
+            <!-- 3. Word Blacklist Filter Manager -->
+            <div class="p-3.5 rounded-lg bg-white/85 border border-[#8abcf0] space-y-2.5">
+              <h3 class="text-sm font-bold text-[#073a80] border-b border-[#c5e1fa] pb-1">3. Private Word Blacklist Filter</h3>
+              <p class="text-[11px] text-[#356396]">Posts, comments, statuses, or usernames containing these blocked words are automatically rejected.</p>
+              <form onsubmit="addBlacklistWord(event)" class="flex gap-2">
+                <input type="text" id="blacklist-word-input" placeholder="Enter word or phrase to block..." class="aero-input !text-xs" required />
+                <button type="submit" class="aqua-btn aqua-btn-red shrink-0">Block Word</button>
+              </form>
+              <div id="blacklist-words-list" class="flex flex-wrap gap-1.5 pt-1">
+                <!-- Blacklisted words rendered here -->
+              </div>
+            </div>
+
+            <!-- 4. User Moderation & Permanent Staff Role Assignment (Owner Only for Roles) -->
+            <div class="p-3.5 rounded-lg bg-white/85 border border-[#8abcf0] space-y-2.5">
+              <h3 class="text-sm font-bold text-[#073a80] border-b border-[#c5e1fa] pb-1">4. User Moderation &amp; Permanent Staff Assignment</h3>
+              <p class="text-[11px] text-[#356396]">Staff can ban/unban accounts. Only the Owner (<strong>laneexx</strong>) can assign permanent Admin or Moderator roles.</p>
+              <div id="staff-users-table" class="space-y-2 max-h-72 overflow-y-auto pr-1">
+                <!-- User moderation rows rendered here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 5: OWNER-EXCLUSIVE LIVE SITE CUSTOMIZER ('laneexx' ONLY) -->
+      <div id="view-owner-customizer" class="hidden space-y-4">
+        <div class="xp-window">
+          <div class="xp-titlebar">
+            <div class="flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="2" y="2" width="12" height="12" fill="#ffd23f"/><rect x="4" y="4" width="8" height="8" fill="#003893"/></svg>
+              <span>Owner Site Customizer - Full Website &amp; Text Control</span>
+            </div>
+            <div class="win-controls">
+              <button type="button" class="win-btn win-btn-close" onclick="switchMainView('feed')">
+                <svg width="8" height="8" viewBox="0 0 9 9"><path d="M1.5 1.5L7.5 7.5M7.5 1.5L1.5 7.5" stroke="#fff" stroke-width="1.8"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="p-4 space-y-4">
+            <!-- Inline Click-to-Edit Toggle -->
+            <div class="p-3 rounded-lg bg-[#fff8db] border border-[#e0a800] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <p class="text-xs font-bold text-[#5c3d00]">Inline On-Page Text Editor</p>
+                <p class="text-[11px] text-[#7a5200]">Turn this ON to click and edit any text directly anywhere on the website.</p>
+              </div>
+              <button type="button" id="toggle-inline-edit-btn" onclick="toggleInlineTextEdit()" class="aqua-btn shrink-0">Enable Inline Edit</button>
+            </div>
+
+            <!-- Branding, Logo, Wallpaper & Theme Colors -->
+            <div class="p-3.5 rounded-lg bg-white/85 border border-[#8abcf0] space-y-3">
+              <h3 class="text-sm font-bold text-[#073a80] border-b border-[#c5e1fa] pb-1">Site Logo, Wallpaper &amp; Aero Theme</h3>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-[11px] font-bold text-[#0c4185] mb-1">Upload Custom Site Logo:</label>
+                  <input type="file" accept="image/*" onchange="handleSiteLogoUpload(event)" class="aero-input !text-xs !py-1" />
+                </div>
+                <div>
+                  <label class="block text-[11px] font-bold text-[#0c4185] mb-1">Or Logo Image URL:</label>
+                  <div class="flex gap-1">
+                    <input type="url" id="owner-logo-url-input" placeholder="https://..." class="aero-input !text-xs !py-1" />
+                    <button type="button" onclick="applyLogoUrl()" class="aqua-btn !py-1 !px-2.5">Set</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-[11px] font-bold text-[#0c4185] mb-1">Upload Custom Background Wallpaper:</label>
+                  <input type="file" accept="image/*" onchange="handleWallpaperUpload(event)" class="aero-input !text-xs !py-1" />
+                </div>
+                <div>
+                  <label class="block text-[11px] font-bold text-[#0c4185] mb-1">Or Wallpaper Image URL:</label>
+                  <div class="flex gap-1">
+                    <input type="url" id="owner-bg-url-input" placeholder="https://..." class="aero-input !text-xs !py-1" />
+                    <button type="button" onclick="applyWallpaperUrl()" class="aqua-btn !py-1 !px-2.5">Set</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap items-center gap-4 pt-1">
+                <div class="flex items-center gap-2">
+                  <label class="text-[11px] font-bold text-[#0c4185]">Window Titlebar Color:</label>
+                  <input type="color" id="owner-title-color" value="#0855dd" onchange="updateAeroColors()" class="w-8 h-7 rounded cursor-pointer border border-[#5ba2e6]" />
+                </div>
+                <div class="flex items-center gap-2">
+                  <label class="text-[11px] font-bold text-[#0c4185]">Window Glass Opacity:</label>
+                  <input type="range" id="owner-glass-opacity" min="55" max="98" value="78" oninput="updateAeroColors()" class="cursor-pointer" />
+                </div>
+                <button type="button" onclick="resetSiteVisuals()" class="aqua-btn !text-[11px]">Reset Default Frutiger Aero Theme</button>
+              </div>
+            </div>
+
+            <!-- All Website Text Strings Editor -->
+            <div class="p-3.5 rounded-lg bg-white/85 border border-[#8abcf0] space-y-2.5">
+              <div class="flex items-center justify-between border-b border-[#c5e1fa] pb-1">
+                <h3 class="text-sm font-bold text-[#073a80]">Edit All Website Texts &amp; Labels</h3>
+                <button type="button" onclick="saveAllCustomTexts()" class="aqua-btn aqua-btn-green !py-1 !px-3">Save All Text Changes</button>
+              </div>
+              <div id="owner-text-fields-list" class="space-y-2.5 max-h-96 overflow-y-auto pr-1">
+                <!-- Dynamically generated inputs for every text key on the site -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- RIGHT COLUMN: Anonymous Public Pinboard & System Status -->
+    <aside class="lg:col-span-3 space-y-4">
+
+      <!-- Anonymous Public Pinboard Window -->
+      <section class="xp-window" id="win-pinboard">
+        <div class="xp-titlebar">
+          <div class="flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="6" y="1" width="4" height="5" fill="#ff5947"/><rect x="4" y="6" width="8" height="2" fill="#ffd43b"/><rect x="7" y="8" width="2" height="7" fill="#ffffff"/></svg>
+            <span data-editable-key="pinboardWinTitle">Public Pinboard</span>
+          </div>
+          <div class="win-controls">
+            <button type="button" class="win-btn win-btn-close" onclick="showSystemDialog('Public Pinboard', 'System announcements remain pinned for community updates.')">
+              <svg width="8" height="8" viewBox="0 0 9 9"><path d="M1.5 1.5L7.5 7.5M7.5 1.5L1.5 7.5" stroke="#fff" stroke-width="1.8"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="p-3">
+          <p class="text-[11px] text-[#356396] mb-2.5" data-editable-key="pinboardSubtext">Official anonymous platform updates &amp; system notices:</p>
+          <div id="pinboard-announcements-list" class="space-y-2.5">
+            <!-- Anonymous announcements rendered here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Community Telemetry / Network Status Window (Inspired by XP/Vista Network Gadget) -->
+      <section class="xp-window" id="win-network">
+        <div class="xp-titlebar">
+          <div class="flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="2" y="10" width="2" height="4" fill="#9eff7a"/><rect x="6" y="7" width="2" height="7" fill="#9eff7a"/><rect x="10" y="4" width="2" height="10" fill="#9eff7a"/><rect x="14" y="2" width="2" height="12" fill="#ffffff"/></svg>
+            <span data-editable-key="statusGadgetTitle">Network Status</span>
+          </div>
+          <div class="win-controls">
+            <button type="button" class="win-btn win-btn-close" onclick="this.closest('.xp-window').style.display='none'">
+              <svg width="8" height="8" viewBox="0 0 9 9"><path d="M1.5 1.5L7.5 7.5M7.5 1.5L1.5 7.5" stroke="#fff" stroke-width="1.8"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="p-3 space-y-2 text-xs">
+          <div class="flex items-center justify-between bg-white/80 px-2.5 py-1.5 rounded border border-[#a2ccf2]">
+            <span class="text-[#2c5c91] font-semibold">Connection:</span>
+            <span class="font-bold text-[#198c0c]">Connected (100.0 Mbps)</span>
+          </div>
+          <div class="flex items-center justify-between bg-white/80 px-2.5 py-1.5 rounded border border-[#a2ccf2]">
+            <span class="text-[#2c5c91] font-semibold">Registered Users:</span>
+            <span id="stat-total-users" class="font-bold text-[#083c7d]">0</span>
+          </div>
+          <div class="flex items-center justify-between bg-white/80 px-2.5 py-1.5 rounded border border-[#a2ccf2]">
+            <span class="text-[#2c5c91] font-semibold">Community Posts:</span>
+            <span id="stat-total-posts" class="font-bold text-[#083c7d]">0</span>
+          </div>
+          <div class="pt-1 text-[10px] text-center text-[#366499]" data-editable-key="footerCopyrightText">
+            AeroSphere Community OS &bull; 2006 Edition
+          </div>
+        </div>
+      </section>
+
+    </aside>
+
+  </main>
+
+  <!-- AUTHENTICATION MODAL (Log In / Register) -->
+  <div id="auth-modal" class="hidden fixed inset-0 z-50 bg-[#041d42]/55 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="xp-window w-full max-w-md">
+      <div class="xp-titlebar">
+        <div class="flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="4" y="2" width="8" height="6" fill="#ffd43b"/><rect x="3" y="8" width="10" height="6" fill="#ffffff"/></svg>
+          <span id="auth-modal-title">Log In to AeroSphere</span>
+        </div>
+        <div class="win-controls">
+          <button type="button" class="win-btn win-btn-close" onclick="closeAuthModal()">
+            <svg width="8" height="8" viewBox="0 0 9 9"><path d="M1.5 1.5L7.5 7.5M7.5 1.5L1.5 7.5" stroke="#fff" stroke-width="1.8"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="p-4 space-y-3.5">
+        <div class="flex gap-2 border-b border-[#9cc7f0] pb-2.5">
+          <button type="button" id="auth-tab-login" onclick="openAuthModal('login')" class="aqua-btn aqua-btn-blue flex-1">Log In</button>
+          <button type="button" id="auth-tab-register" onclick="openAuthModal('register')" class="aqua-btn flex-1">Create Account</button>
+        </div>
+
+        <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-3">
+          <div>
+            <label class="block text-xs font-bold text-[#0a3c7d] mb-1">Username:</label>
+            <input type="text" id="auth-username" required minlength="2" maxlength="24" placeholder="Enter username..." class="aero-input" />
+          </div>
+
+          <div id="auth-displayname-group" class="hidden">
+            <label class="block text-xs font-bold text-[#0a3c7d] mb-1">Display Name:</label>
+            <input type="text" id="auth-displayname" maxlength="32" placeholder="How your name appears on posts..." class="aero-input" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-[#0a3c7d] mb-1">Password:</label>
+            <input type="password" id="auth-password" required minlength="3" placeholder="Enter password..." class="aero-input" />
+          </div>
+
+          <div id="auth-status-group" class="hidden">
+            <label class="block text-xs font-bold text-[#0a3c7d] mb-1">Custom Status (Optional):</label>
+            <input type="text" id="auth-status" maxlength="80" placeholder="Write your own custom status..." class="aero-input" />
+          </div>
+
+          <div id="auth-avatar-group" class="hidden space-y-1.5">
+            <label class="block text-xs font-bold text-[#0a3c7d]">Profile Picture (Optional):</label>
+            <input type="file" id="auth-avatar-file" accept="image/*" onchange="handleAuthAvatarFile(event)" class="aero-input !text-xs !py-1" />
+            <input type="url" id="auth-avatar-url" placeholder="Or paste profile picture URL..." class="aero-input !text-xs !py-1" />
+          </div>
+
+          <div id="auth-error-box" class="hidden p-2 rounded bg-[#ffe3e0] border border-[#e03131] text-[11px] font-semibold text-[#8f0d04]"></div>
+
+          <div class="pt-1 flex justify-end gap-2">
+            <button type="button" onclick="closeAuthModal()" class="aqua-btn">Cancel</button>
+            <button type="submit" id="auth-submit-btn" class="aqua-btn aqua-btn-green">Log In</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT PROFILE MODAL -->
+  <div id="profile-modal" class="hidden fixed inset-0 z-50 bg-[#041d42]/55 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="xp-window w-full max-w-md">
+      <div class="xp-titlebar">
+        <span>Edit User Profile</span>
+        <div class="win-controls">
+          <button type="button" class="win-btn win-btn-close" onclick="closeProfileModal()">
+            <svg width="8" height="8" viewBox="0 0 9 9"><path d="M1.5 1.5L7.5 7.5M7.5 1.5L1.5 7.5" stroke="#fff" stroke-width="1.8"/></svg>
+          </button>
+        </div>
+      </div>
+      <form onsubmit="saveProfileChanges(event)" class="p-4 space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-[#0a3c7d] mb-1">Display Name:</label>
+          <input type="text" id="edit-profile-displayname" required maxlength="32" class="aero-input" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-[#0a3c7d] mb-1">Custom Status:</label>
+          <input type="text" id="edit-profile-status" maxlength="80" placeholder="Set your status..." class="aero-input" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-[#0a3c7d] mb-1">Bio:</label>
+          <textarea id="edit-profile-bio" rows="3" maxlength="240" placeholder="Tell the community about yourself..." class="aero-input resize-none"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-[#0a3c7d] mb-1">Upload New Profile Picture:</label>
+          <input type="file" accept="image/*" onchange="handleEditAvatarFile(event)" class="aero-input !text-xs !py-1" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-[#0a3c7d] mb-1">Or Profile Picture URL:</label>
+          <input type="url" id="edit-profile-avatar-url" placeholder="https://..." class="aero-input !text-xs !py-1" />
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeProfileModal()" class="aqua-btn">Cancel</button>
+          <button type="submit" class="aqua-btn aqua-btn-green">Save Profile</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- CLASSIC WINDOWS SYSTEM MESSAGE DIALOG (Replaces browser alert/confirm) -->
+  <div id="system-dialog-modal" class="hidden fixed inset-0 z-[60] bg-[#041d42]/55 flex items-center justify-center p-4">
+    <div class="xp-window w-full max-w-sm">
+      <div class="xp-titlebar">
+        <div class="flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="2" y="2" width="12" height="12" fill="#ffd43b"/><rect x="7" y="4" width="2" height="5" fill="#000"/><rect x="7" y="10" width="2" height="2" fill="#000"/></svg>
+          <span id="system-dialog-title">System Message</span>
+        </div>
+        <div class="win-controls">
+          <button type="button" class="win-btn win-btn-close" onclick="closeSystemDialog()">
+            <svg width="8" height="8" viewBox="0 0 9 9"><path d="M1.5 1.5L7.5 7.5M7.5 1.5L1.5 7.5" stroke="#fff" stroke-width="1.8"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="p-4 space-y-4">
+        <div class="flex items-start gap-3">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-b from-[#7cc7ff] to-[#1164d1] border-2 border-white shadow flex items-center justify-center shrink-0 text-white font-bold text-base">i</div>
+          <p id="system-dialog-message" class="text-xs sm:text-sm text-[#0f2947] leading-relaxed pt-1"></p>
+        </div>
+        <div id="system-dialog-actions" class="flex justify-end gap-2">
+          <button type="button" onclick="closeSystemDialog()" class="aqua-btn aqua-btn-blue px-5">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- START MENU POPUP -->
+  <div id="xp-start-menu" class="hidden fixed bottom-[38px] left-0 z-50 w-72 xp-window !rounded-bl-none">
+    <div class="xp-titlebar !py-2.5">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded bg-white/90 border border-white flex items-center justify-center overflow-hidden">
+          <img id="start-menu-avatar" src="" alt="" class="w-full h-full object-cover hidden" />
+          <svg id="start-menu-default-icon" class="w-5 h-5" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="5" y="2" width="6" height="5" fill="#1877e8"/><rect x="3" y="8" width="10" height="6" fill="#35a832"/></svg>
+        </div>
+        <span id="start-menu-username" class="text-sm font-bold">Guest User</span>
+      </div>
+    </div>
+    <div class="p-2 bg-white/95 space-y-1 text-xs">
+      <button type="button" onclick="switchMainView('feed'); toggleStartMenu(false)" class="w-full text-left px-3 py-2 rounded hover:bg-[#d6ecff] font-bold text-[#0a3c7d] flex items-center gap-2">
+        <span class="w-2.5 h-2.5 bg-[#1877e8] inline-block"></span>
+        <span>Community Feed</span>
+      </button>
+      <button type="button" onclick="switchMainView('members'); toggleStartMenu(false)" class="w-full text-left px-3 py-2 rounded hover:bg-[#d6ecff] font-bold text-[#0a3c7d] flex items-center gap-2">
+        <span class="w-2.5 h-2.5 bg-[#35a832] inline-block"></span>
+        <span>Member Directory</span>
+      </button>
+      <button type="button" onclick="openMyProfileView(); toggleStartMenu(false)" id="start-menu-profile-btn" class="hidden w-full text-left px-3 py-2 rounded hover:bg-[#d6ecff] font-bold text-[#0a3c7d] flex items-center gap-2">
+        <span class="w-2.5 h-2.5 bg-[#5ec5ff] inline-block"></span>
+        <span>My Profile</span>
+      </button>
+      <button type="button" onclick="switchMainView('friends-dms'); toggleStartMenu(false)" class="w-full text-left px-3 py-2 rounded hover:bg-[#d6ecff] font-bold text-[#0a3c7d] flex items-center gap-2">
+        <span class="w-2.5 h-2.5 bg-[#48d128] inline-block"></span>
+        <span>Friends &amp; Private DMs</span>
+      </button>
+      <button type="button" onclick="switchMainView('inbox'); toggleStartMenu(false)" class="w-full text-left px-3 py-2 rounded hover:bg-[#d6ecff] font-bold text-[#0a3c7d] flex items-center gap-2">
+        <span class="w-2.5 h-2.5 bg-[#f5b800] inline-block"></span>
+        <span>System Notices Inbox</span>
+      </button>
+      <button type="button" id="start-menu-staff-btn" onclick="switchMainView('staff'); toggleStartMenu(false)" class="hidden w-full text-left px-3 py-2 rounded hover:bg-[#e0ffe0] font-bold text-[#146e0a] flex items-center gap-2">
+        <span class="w-2.5 h-2.5 bg-[#24b351] inline-block"></span>
+        <span>Staff Studio</span>
+      </button>
+      <button type="button" id="start-menu-owner-btn" onclick="switchMainView('owner-customizer'); toggleStartMenu(false)" class="hidden w-full text-left px-3 py-2 rounded hover:bg-[#fff7d6] font-bold text-[#8a5800] flex items-center gap-2">
+        <span class="w-2.5 h-2.5 bg-[#ff9900] inline-block"></span>
+        <span>Owner Site Customizer</span>
+      </button>
+      <div class="border-t border-[#c2def7] my-1"></div>
+      <button type="button" id="start-menu-auth-btn" onclick="openAuthModal('login'); toggleStartMenu(false)" class="w-full text-left px-3 py-2 rounded hover:bg-[#ffe8e6] font-bold text-[#b81b0c]">
+        Log In / Switch Account
+      </button>
+    </div>
+  </div>
+
+  <!-- WINDOWS XP / VISTA FRUTIGER AERO TASKBAR -->
+  <footer class="xp-taskbar">
+    <div class="flex items-center gap-2 min-w-0">
+      <button type="button" onclick="toggleStartMenu()" class="xp-start-btn shrink-0">
+        <!-- Glossy Orb Icon -->
+        <svg class="w-5 h-5" viewBox="0 0 16 16" shape-rendering="crispEdges">
+          <rect x="2" y="2" width="5" height="5" fill="#ff5938"/>
+          <rect x="9" y="2" width="5" height="5" fill="#7ce838"/>
+          <rect x="2" y="9" width="5" height="5" fill="#38b6ff"/>
+          <rect x="9" y="9" width="5" height="5" fill="#ffd43b"/>
+        </svg>
+        <span data-editable-key="startBtnText">start</span>
+      </button>
+
+      <div class="hidden sm:flex items-center gap-1.5 overflow-x-auto">
+        <button type="button" onclick="switchMainView('feed')" id="task-tab-feed" class="taskbar-tab active">
+          <span>AeroSphere Portal</span>
+        </button>
+        <button type="button" onclick="switchMainView('members')" id="task-tab-members" class="taskbar-tab">
+          <span>Members</span>
+        </button>
+        <button type="button" onclick="switchMainView('friends-dms')" id="task-tab-friends-dms" class="taskbar-tab">
+          <span>Friends &amp; DMs</span>
+        </button>
+        <button type="button" onclick="openMyProfileView()" id="task-tab-my-profile" class="taskbar-tab">
+          <span>My Profile</span>
+        </button>
+        <button type="button" onclick="switchMainView('inbox')" id="task-tab-inbox" class="taskbar-tab">
+          <span>System Notices</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="xp-tray shrink-0">
+      <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" shape-rendering="crispEdges">
+        <rect x="2" y="10" width="2" height="4" fill="#9eff7a"/>
+        <rect x="6" y="7" width="2" height="7" fill="#9eff7a"/>
+        <rect x="10" y="4" width="2" height="10" fill="#9eff7a"/>
+        <rect x="14" y="2" width="2" height="12" fill="#ffffff"/>
+      </svg>
+      <span id="xp-live-clock" class="font-semibold text-[11px]">12:00 PM</span>
+    </div>
+  </footer>
+
+  <script>
+    // =========================================================================
+    // STORAGE KEYS & INITIAL CLEAN-SLATE STATE (ZERO DEMO USERS, POSTS, OR TAGS)
+    // =========================================================================
+    const STORAGE_KEYS = {
+      USERS: 'aerosphere_users_v1',
+      POSTS: 'aerosphere_posts_v1',
+      ANNOUNCEMENTS: 'aerosphere_announcements_v1',
+      NOTICES: 'aerosphere_notices_v1',
+      BLACKLIST: 'aerosphere_blacklist_v1',
+      DMS: 'aerosphere_dms_v1',
+      SITE_CONFIG: 'aerosphere_site_config_v1',
+      SESSION: 'aerosphere_current_session_v1'
+    };
+
+    const DEFAULT_SITE_CONFIG = {
+      texts: {
+        browserWindowTitle: 'AeroSphere Internet Explorer - Community Portal 2006',
+        siteTitle: 'AeroSphere',
+        siteVersionBadge: 'VER 2.6 AERO',
+        siteTagline: 'Glossy 2000s Community Desktop & Social Network',
+        navFeedLabel: 'Community Feed',
+        navMembersLabel: 'Member Directory',
+        navInboxLabel: 'System Notices',
+        navStaffLabel: 'Staff Studio',
+        navOwnerEditLabel: 'Edit Site',
+        accountWinTitle: 'User Passport',
+        guestWelcomeHeading: 'Welcome, Visitor',
+        guestWelcomeSubtext: 'Sign in or create an account to post updates, customize your status, and join the community.',
+        loginBtnLabel: 'Log In',
+        registerBtnLabel: 'Sign Up',
+        customStatusLabel: 'Custom Status Message:',
+        editProfileBtnLabel: 'Edit Profile',
+        logoutBtnLabel: 'Log Off',
+        searchWinTitle: 'Search Community',
+        searchHelperText: 'Type a #hashtag to filter posts or enter a username to find members.',
+        composerWinTitle: 'Create New Post',
+        attachPhotoLabel: 'Attach Photo (Optional):',
+        publishPostBtnLabel: 'Publish Post',
+        feedWinTitle: 'Community Stream',
+        directoryWinTitle: 'Registered Members Directory',
+        inboxWinTitle: 'System Notices & Important Alerts',
+        staffStudioTitle: 'Staff Studio - Moderation & Control Center',
+        pinboardWinTitle: 'Public Pinboard',
+        pinboardSubtext: 'Official anonymous platform updates & system notices:',
+        statusGadgetTitle: 'Network Status',
+        footerCopyrightText: 'AeroSphere Community OS - 2006 Edition',
+        startBtnText: 'start'
+      },
+      logoUrl: '',
+      wallpaperUrl: '',
+      titleColor: '#0855dd',
+      glassOpacity: 78
+    };
+
+    // In-memory working state loaded from localStorage
+    let users = [];
+    let posts = [];
+    let announcements = [];
+    let notices = [];
+    let blacklist = [];
+    let directMessages = [];
+    let siteConfig = JSON.parse(JSON.stringify(DEFAULT_SITE_CONFIG));
+    let currentUser = null;
+
+    // UI transient state
+    let authMode = 'login';
+    let tempAuthAvatar = '';
+    let tempEditAvatar = '';
+    let stagedPostMedia = [];
+    let activeTagFilter = '';
+    let activeAuthorFilterId = '';
+    let searchQuery = '';
+    let inlineEditEnabled = false;
+    let activeProfileTab = 'friends';
+    let activeDmPartnerId = '';
+
+    const MAX_SINGLE_MEDIA_BYTES = 12 * 1024 * 1024; // 12 MB per file guard for browser storage
+    const MAX_TOTAL_MEDIA_BYTES = 24 * 1024 * 1024;  // 24 MB combined per post guard
+
+    // Safe Storage Wrapper (gracefully falls back to in-memory storage in sandboxed iframes)
+    const memoryStorageFallback = {};
+    function safeGetItem(key) {
+      try {
+        return window.localStorage.getItem(key);
+      } catch (err) {
+        return Object.prototype.hasOwnProperty.call(memoryStorageFallback, key) ? memoryStorageFallback[key] : null;
+      }
+    }
+    function safeSetItem(key, value) {
+      try {
+        window.localStorage.setItem(key, value);
+      } catch (err) {
+        memoryStorageFallback[key] = String(value);
+      }
+    }
+    function safeRemoveItem(key) {
+      try {
+        window.localStorage.removeItem(key);
+      } catch (err) {
+        delete memoryStorageFallback[key];
+      }
+    }
+
+    const DEFAULT_AVATAR_SVG = "data:image/svg+xml;utf8," + encodeURIComponent(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges">
+        <rect width="32" height="32" fill="#b8e3ff"/>
+        <rect x="11" y="5" width="10" height="9" fill="#1877e8"/>
+        <rect x="7" y="16" width="18" height="12" fill="#35a832"/>
+        <rect x="12" y="6" width="3" height="2" fill="#ffffff"/>
+      </svg>`
+    );
+
+    function escapeHTML(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function containsBlacklistedWord(text) {
+      if (!text || blacklist.length === 0) return null;
+      const lower = String(text).toLowerCase();
+      for (const word of blacklist) {
+        if (word && lower.includes(word.toLowerCase())) {
+          return word;
+        }
+      }
+      return null;
+    }
+
+    function loadAllData() {
+      try {
+        users = JSON.parse(safeGetItem(STORAGE_KEYS.USERS)) || [];
+        posts = JSON.parse(safeGetItem(STORAGE_KEYS.POSTS)) || [];
+        announcements = JSON.parse(safeGetItem(STORAGE_KEYS.ANNOUNCEMENTS)) || [];
+        notices = JSON.parse(safeGetItem(STORAGE_KEYS.NOTICES)) || [];
+        blacklist = JSON.parse(safeGetItem(STORAGE_KEYS.BLACKLIST)) || [];
+        directMessages = JSON.parse(safeGetItem(STORAGE_KEYS.DMS)) || [];
+
+        // Normalize user fields (bio, following) and announcement likes
+        users.forEach(u => {
+          if (typeof u.bio !== 'string') u.bio = '';
+          if (!Array.isArray(u.following)) u.following = [];
+        });
+        announcements.forEach(a => {
+          if (!Array.isArray(a.likes)) a.likes = [];
+        });
+
+        const savedConfig = JSON.parse(safeGetItem(STORAGE_KEYS.SITE_CONFIG));
+        if (savedConfig) {
+          const mergedTexts = { ...DEFAULT_SITE_CONFIG.texts };
+          if (savedConfig.texts) {
+            Object.keys(DEFAULT_SITE_CONFIG.texts).forEach(k => {
+              if (savedConfig.texts[k] !== undefined) {
+                mergedTexts[k] = savedConfig.texts[k];
+              }
+            });
+          }
+          siteConfig = {
+            ...DEFAULT_SITE_CONFIG,
+            ...savedConfig,
+            texts: mergedTexts
+          };
+        }
+
+        const savedUsername = safeGetItem(STORAGE_KEYS.SESSION);
+        if (savedUsername) {
+          const found = users.find(u => u.username.toLowerCase() === savedUsername.toLowerCase());
+          if (found && !found.banned) {
+            if (found.username.trim().toLowerCase() === 'laneexx' && found.role !== 'Owner') {
+              found.role = 'Owner';
+              saveUsers();
+            }
+            currentUser = found;
+          } else {
+            safeRemoveItem(STORAGE_KEYS.SESSION);
+            currentUser = null;
+          }
+        }
+      } catch (e) {
+        console.warn('Error initializing data:', e);
+      }
+    }
+
+    function saveUsers() { safeSetItem(STORAGE_KEYS.USERS, JSON.stringify(users)); }
+    function savePosts() { safeSetItem(STORAGE_KEYS.POSTS, JSON.stringify(posts)); }
+    function saveAnnouncements() { safeSetItem(STORAGE_KEYS.ANNOUNCEMENTS, JSON.stringify(announcements)); }
+    function saveNotices() { safeSetItem(STORAGE_KEYS.NOTICES, JSON.stringify(notices)); }
+    function saveBlacklist() { safeSetItem(STORAGE_KEYS.BLACKLIST, JSON.stringify(blacklist)); }
+    function saveDirectMessages() { safeSetItem(STORAGE_KEYS.DMS, JSON.stringify(directMessages)); }
+    function saveSiteConfig() { safeSetItem(STORAGE_KEYS.SITE_CONFIG, JSON.stringify(siteConfig)); }
+
+    // =========================================================================
+    // AUTHENTICATION (SIGN UP & LOG IN WITH AUTOMATIC 'laneexx' OWNER ROLE)
+    // =========================================================================
+    function showAuthError(msg) {
+      const box = document.getElementById('auth-error-box');
+      if (!box) return;
+      if (!msg) {
+        box.textContent = '';
+        box.classList.add('hidden');
+      } else {
+        box.textContent = msg;
+        box.classList.remove('hidden');
+      }
+    }
+
+    function openAuthModal(mode = 'login') {
+      authMode = mode;
+      tempAuthAvatar = '';
+      showAuthError('');
+
+      const modal = document.getElementById('auth-modal');
+      const titleEl = document.getElementById('auth-modal-title');
+      const submitBtn = document.getElementById('auth-submit-btn');
+      const tabLogin = document.getElementById('auth-tab-login');
+      const tabRegister = document.getElementById('auth-tab-register');
+      const displayGroup = document.getElementById('auth-displayname-group');
+      const statusGroup = document.getElementById('auth-status-group');
+      const avatarGroup = document.getElementById('auth-avatar-group');
+
+      document.getElementById('auth-form').reset();
+
+      if (mode === 'register') {
+        titleEl.textContent = 'Create AeroSphere Account';
+        submitBtn.textContent = 'Create Account';
+        tabRegister.classList.add('aqua-btn-blue');
+        tabLogin.classList.remove('aqua-btn-blue');
+        displayGroup.classList.remove('hidden');
+        statusGroup.classList.remove('hidden');
+        avatarGroup.classList.remove('hidden');
+      } else {
+        titleEl.textContent = 'Log In to AeroSphere';
+        submitBtn.textContent = 'Log In';
+        tabLogin.classList.add('aqua-btn-blue');
+        tabRegister.classList.remove('aqua-btn-blue');
+        displayGroup.classList.add('hidden');
+        statusGroup.classList.add('hidden');
+        avatarGroup.classList.add('hidden');
+      }
+
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        const uInput = document.getElementById('auth-username');
+        if (uInput) uInput.focus();
+      }, 30);
+    }
+
+    function closeAuthModal() {
+      document.getElementById('auth-modal').classList.add('hidden');
+      showAuthError('');
+    }
+
+    function handleAuthAvatarFile(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        tempAuthAvatar = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleAuthSubmit(event) {
+      event.preventDefault();
+      showAuthError('');
+
+      const rawUsername = document.getElementById('auth-username').value.trim();
+      const password = document.getElementById('auth-password').value;
+
+      if (!rawUsername || rawUsername.length < 2) {
+        showAuthError('Please enter a username (at least 2 characters).');
+        return;
+      }
+      if (!password || password.length < 3) {
+        showAuthError('Please enter a password (at least 3 characters).');
+        return;
+      }
+
+      const lowerUsername = rawUsername.toLowerCase();
+      const isOwnerUsername = lowerUsername === 'laneexx';
+
+      if (authMode === 'register') {
+        const displayName = document.getElementById('auth-displayname').value.trim() || rawUsername;
+        const initialStatus = document.getElementById('auth-status').value.trim();
+        const avatarUrl = document.getElementById('auth-avatar-url').value.trim();
+
+        const blockedUserWord = containsBlacklistedWord(rawUsername) || containsBlacklistedWord(displayName) || containsBlacklistedWord(initialStatus);
+        if (blockedUserWord) {
+          showAuthError('Your username, display name, or status contains a word blocked by the site filter.');
+          return;
+        }
+
+        const existing = users.find(u => u.username.toLowerCase() === lowerUsername);
+        if (existing) {
+          showAuthError('That username is already registered. Switch to Log In or choose another username.');
+          return;
+        }
+
+        const newUser = {
+          id: 'usr_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+          username: rawUsername,
+          displayName: displayName,
+          password: password,
+          avatar: tempAuthAvatar || avatarUrl || '',
+          status: initialStatus,
+          bio: '',
+          following: [],
+          role: isOwnerUsername ? 'Owner' : 'Member',
+          banned: false,
+          joinedAt: new Date().toISOString()
+        };
+
+        users.push(newUser);
+        saveUsers();
+
+        currentUser = newUser;
+        safeSetItem(STORAGE_KEYS.SESSION, newUser.username);
+        closeAuthModal();
+        refreshAllUI();
+
+        if (isOwnerUsername) {
+          showSystemDialog('Owner Access Granted', 'Welcome, laneexx! Your account has been created with permanent Owner privileges, unlocking Staff Studio and Edit Site.');
+        } else {
+          showSystemDialog('Account Created', `Welcome to AeroSphere, ${newUser.displayName}!`);
+        }
+      } else {
+        // Login Mode
+        const found = users.find(u => u.username.toLowerCase() === lowerUsername);
+        if (!found) {
+          showAuthError('No account found with that username. Click "Create Account" above to sign up.');
+          return;
+        }
+        if (found.password !== password) {
+          showAuthError('Incorrect password. Please try again.');
+          return;
+        }
+        if (found.banned) {
+          showAuthError('This account has been banned by platform staff.');
+          return;
+        }
+
+        // Automatically ensure laneexx always holds the permanent Owner role
+        if (isOwnerUsername && found.role !== 'Owner') {
+          found.role = 'Owner';
+          saveUsers();
+        }
+
+        currentUser = found;
+        safeSetItem(STORAGE_KEYS.SESSION, found.username);
+        closeAuthModal();
+        refreshAllUI();
+      }
+    }
+
+    function logoutUser() {
+      currentUser = null;
+      safeRemoveItem(STORAGE_KEYS.SESSION);
+      if (inlineEditEnabled) {
+        toggleInlineTextEdit();
+      }
+      switchMainView('feed');
+      refreshAllUI();
+    }
+
+    // =========================================================================
+    // PROFILE & CUSTOM STATUS MANAGEMENT
+    // =========================================================================
+    function updateCustomStatus() {
+      if (!currentUser) return;
+      const input = document.getElementById('custom-status-input');
+      const newStatus = input.value.trim();
+
+      const blocked = containsBlacklistedWord(newStatus);
+      if (blocked) {
+        showSystemDialog('Blocked Word', 'Your status contains a word restricted by the platform blacklist.');
+        return;
+      }
+
+      currentUser.status = newStatus;
+      const idx = users.findIndex(u => u.id === currentUser.id);
+      if (idx !== -1) users[idx].status = newStatus;
+      saveUsers();
+      refreshAllUI();
+      showSystemDialog('Status Updated', newStatus ? `Your custom status is now: "${newStatus}"` : 'Your custom status has been cleared.');
+    }
+
+    function openProfileModal() {
+      if (!currentUser) return;
+      tempEditAvatar = '';
+      document.getElementById('edit-profile-displayname').value = currentUser.displayName;
+      document.getElementById('edit-profile-status').value = currentUser.status || '';
+      document.getElementById('edit-profile-bio').value = currentUser.bio || '';
+      document.getElementById('edit-profile-avatar-url').value = currentUser.avatar && !currentUser.avatar.startsWith('data:') ? currentUser.avatar : '';
+      document.getElementById('profile-modal').classList.remove('hidden');
+    }
+
+    function closeProfileModal() {
+      document.getElementById('profile-modal').classList.add('hidden');
+    }
+
+    function handleEditAvatarFile(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        tempEditAvatar = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveProfileChanges(event) {
+      event.preventDefault();
+      if (!currentUser) return;
+
+      const newDisplay = document.getElementById('edit-profile-displayname').value.trim();
+      const newStatus = document.getElementById('edit-profile-status').value.trim();
+      const newBio = document.getElementById('edit-profile-bio').value.trim();
+      const newUrl = document.getElementById('edit-profile-avatar-url').value.trim();
+
+      if (!newDisplay) return;
+      const blocked = containsBlacklistedWord(newDisplay) || containsBlacklistedWord(newStatus) || containsBlacklistedWord(newBio);
+      if (blocked) {
+        showSystemDialog('Blocked Word', 'Your display name, status, or bio contains a word restricted by the platform blacklist.');
+        return;
+      }
+
+      currentUser.displayName = newDisplay;
+      currentUser.status = newStatus;
+      currentUser.bio = newBio;
+      if (tempEditAvatar) {
+        currentUser.avatar = tempEditAvatar;
+      } else if (newUrl) {
+        currentUser.avatar = newUrl;
+      }
+
+      const idx = users.findIndex(u => u.id === currentUser.id);
+      if (idx !== -1) users[idx] = { ...currentUser };
+      saveUsers();
+      closeProfileModal();
+      refreshAllUI();
+    }
+
+    // =========================================================================
+    // NAVIGATION & SYSTEM DIALOGS
+    // =========================================================================
+    function showSystemDialog(title, message) {
+      document.getElementById('system-dialog-title').textContent = title;
+      document.getElementById('system-dialog-message').textContent = message;
+      document.getElementById('system-dialog-modal').classList.remove('hidden');
+    }
+
+    function closeSystemDialog() {
+      document.getElementById('system-dialog-modal').classList.add('hidden');
+    }
+
+    function toggleStartMenu(forceState) {
+      const menu = document.getElementById('xp-start-menu');
+      if (typeof forceState === 'boolean') {
+        menu.classList.toggle('hidden', !forceState);
+      } else {
+        menu.classList.toggle('hidden');
+      }
+    }
+
+    function toggleCompactView() {
+      const main = document.querySelector('main');
+      main.classList.toggle('max-w-full');
+      main.classList.toggle('max-w-7xl');
+    }
+
+    function isStaffUser(user = currentUser) {
+      if (!user) return false;
+      return user.role === 'Owner' || user.role === 'Admin' || user.role === 'Moderator';
+    }
+
+    function isOwnerUser(user = currentUser) {
+      if (!user) return false;
+      return user.role === 'Owner' || user.username.trim().toLowerCase() === 'laneexx';
+    }
+
+    function switchMainView(viewName) {
+      if (viewName === 'staff' && !isStaffUser()) {
+        showSystemDialog('Access Denied', 'Staff Studio is restricted exclusively to Owner, Admin, and Moderator accounts.');
+        return;
+      }
+      if (viewName === 'owner-customizer' && !isOwnerUser()) {
+        showSystemDialog('Owner Only', 'Only the site Owner (laneexx) can edit the website.');
+        return;
+      }
+
+      const views = ['feed', 'members', 'inbox', 'my-profile', 'friends-dms', 'staff', 'owner-customizer'];
+      views.forEach(v => {
+        const el = document.getElementById(`view-${v}`);
+        if (el) el.classList.toggle('hidden', v !== viewName);
+      });
+
+      ['feed', 'members', 'inbox', 'my-profile', 'friends-dms'].forEach(tab => {
+        const taskTab = document.getElementById(`task-tab-${tab}`);
+        if (taskTab) taskTab.classList.toggle('active', tab === viewName);
+      });
+
+      if (viewName === 'members') renderMembersDirectory();
+      if (viewName === 'inbox') renderInbox();
+      if (viewName === 'my-profile') renderMyProfile();
+      if (viewName === 'friends-dms') renderFriendsAndDMs();
+      if (viewName === 'staff') renderStaffStudio();
+      if (viewName === 'owner-customizer') renderOwnerCustomizer();
+    }
+
+    // =========================================================================
+    // SEARCH & FILTERING (#HASHTAGS AND REGISTERED USERS)
+    // =========================================================================
+    function handleSearchInput(val) {
+      searchQuery = (val || '').trim().toLowerCase();
+      if (searchQuery.startsWith('#') && searchQuery.length > 1) {
+        activeTagFilter = searchQuery;
+        activeAuthorFilterId = '';
+      } else {
+        activeTagFilter = '';
+      }
+      const clearBtn = document.getElementById('clear-search-btn');
+      if (clearBtn) {
+        clearBtn.classList.toggle('hidden', !searchQuery && !activeTagFilter && !activeAuthorFilterId);
+      }
+      renderUnifiedSearch();
+      renderPostsFeed();
+    }
+
+    function filterByTag(tag) {
+      const normalized = (tag || '').trim().toLowerCase();
+      if (!normalized) return;
+      activeTagFilter = normalized.startsWith('#') ? normalized : '#' + normalized;
+      activeAuthorFilterId = '';
+      searchQuery = activeTagFilter;
+      const input = document.getElementById('global-search-input');
+      if (input) input.value = activeTagFilter;
+      const clearBtn = document.getElementById('clear-search-btn');
+      if (clearBtn) clearBtn.classList.remove('hidden');
+      switchMainView('feed');
+      renderUnifiedSearch();
+      renderPostsFeed();
+    }
+
+    function filterByAuthor(userId) {
+      activeAuthorFilterId = userId;
+      activeTagFilter = '';
+      const user = users.find(u => u.id === userId);
+      searchQuery = user ? user.username.toLowerCase() : '';
+      const clearBtn = document.getElementById('clear-search-btn');
+      if (clearBtn) clearBtn.classList.remove('hidden');
+      switchMainView('feed');
+      renderUnifiedSearch();
+      renderPostsFeed();
+    }
+
+    function clearUnifiedSearch() {
+      activeTagFilter = '';
+      activeAuthorFilterId = '';
+      searchQuery = '';
+      const input = document.getElementById('global-search-input');
+      if (input) input.value = '';
+      const clearBtn = document.getElementById('clear-search-btn');
+      if (clearBtn) clearBtn.classList.add('hidden');
+      renderUnifiedSearch();
+      renderPostsFeed();
+    }
+
+    function renderUnifiedSearch() {
+      const banner = document.getElementById('active-filter-banner');
+      const bannerLabel = document.getElementById('active-filter-label');
+      const panel = document.getElementById('search-results-panel');
+
+      if (activeAuthorFilterId) {
+        const u = users.find(usr => usr.id === activeAuthorFilterId);
+        bannerLabel.textContent = `Showing posts by ${u ? u.displayName + ' (@' + u.username + ')' : 'member'}`;
+        banner.classList.remove('hidden');
+        banner.classList.add('flex');
+      } else if (activeTagFilter) {
+        bannerLabel.textContent = `Filtered by hashtag: ${activeTagFilter}`;
+        banner.classList.remove('hidden');
+        banner.classList.add('flex');
+      } else if (searchQuery) {
+        bannerLabel.textContent = `Searching for: "${searchQuery}"`;
+        banner.classList.remove('hidden');
+        banner.classList.add('flex');
+      } else {
+        banner.classList.add('hidden');
+        banner.classList.remove('flex');
+      }
+
+      if (!searchQuery && !activeTagFilter && !activeAuthorFilterId) {
+        panel.innerHTML = `<p class="text-[11px] text-[#3a699c]" data-editable-key="searchHelperText">${escapeHTML(siteConfig.texts.searchHelperText || 'Type a #hashtag to filter posts or enter a username to find members.')}</p>`;
+        return;
+      }
+
+      const term = (activeTagFilter || searchQuery).replace(/^#/, '').toLowerCase();
+      const matchedUsers = users.filter(u =>
+        u.username.toLowerCase().includes(term) || u.displayName.toLowerCase().includes(term)
+      );
+
+      const tagSet = new Set();
+      posts.forEach(p => {
+        (p.tags || []).forEach(t => {
+          if (t.toLowerCase().includes(term)) tagSet.add(t.toLowerCase());
+        });
+      });
+      const matchedTags = [...tagSet];
+
+      let html = '';
+
+      if (matchedTags.length > 0) {
+        html += `<div class="space-y-1"><p class="text-[10px] font-bold uppercase text-[#0c4185]">Matching Hashtags</p><div class="flex flex-wrap gap-1.5">`;
+        html += matchedTags.map(t => `<button type="button" onclick="filterByTag('${escapeHTML(t)}')" class="px-2 py-0.5 rounded bg-[#d9efff] border border-[#5aa2e6] text-[11px] font-bold text-[#083b80] hover:bg-[#c2e4ff]">${escapeHTML(t)}</button>`).join('');
+        html += `</div></div>`;
+      }
+
+      if (matchedUsers.length > 0) {
+        html += `<div class="space-y-1.5"><p class="text-[10px] font-bold uppercase text-[#0c4185]">Matching Users</p>`;
+        html += matchedUsers.map(u => `
+          <div class="p-2 rounded bg-white/85 border border-[#9ec8ed] flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 min-w-0">
+              <img src="${u.avatar || DEFAULT_AVATAR_SVG}" alt="${escapeHTML(u.displayName)}" class="w-7 h-7 rounded border border-[#3e95eb] object-cover shrink-0" />
+              <div class="min-w-0">
+                <p class="text-xs font-bold text-[#073778] truncate">${escapeHTML(u.displayName)}</p>
+                <p class="text-[10px] font-mono text-[#4572a6] truncate">@${escapeHTML(u.username)}</p>
+              </div>
+            </div>
+            <button type="button" onclick="filterByAuthor('${u.id}')" class="aqua-btn !py-0.5 !px-2 !text-[10px] shrink-0">View</button>
+          </div>
+        `).join('');
+        html += `</div>`;
+      }
+
+      if (!html) {
+        html = `<p class="text-[11px] text-[#3a699c] italic">No matching hashtags or users found.</p>`;
+      }
+
+      panel.innerHTML = html;
+    }
+
+    function getRoleBadgeHTML(role) {
+      if (role === 'Owner') {
+        return `<span class="badge-owner px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide shadow-xs">Owner</span>`;
+      }
+      if (role === 'Admin') {
+        return `<span class="badge-admin px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide shadow-xs">Admin</span>`;
+      }
+      if (role === 'Moderator') {
+        return `<span class="badge-moderator px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide shadow-xs">Moderator</span>`;
+      }
+      return '';
+    }
+
+    // =========================================================================
+    // POSTS, PHOTOS, VIDEOS, HASHTAGS & COMMENTS
+    // =========================================================================
+    function showPostMediaNotice(msg) {
+      const box = document.getElementById('post-media-notice');
+      if (!box) return;
+      if (!msg) {
+        box.textContent = '';
+        box.classList.add('hidden');
+      } else {
+        box.textContent = msg;
+        box.classList.remove('hidden');
+      }
+    }
+
+    function handleMediaDragOver(event) {
+      event.preventDefault();
+      const zone = document.getElementById('post-media-dropzone');
+      if (zone) {
+        zone.classList.add('border-[#0a64d6]', 'bg-[#e3f3ff]');
+        zone.classList.remove('border-[#9ec8ed]', 'bg-white/75');
+      }
+    }
+
+    function handleMediaDragLeave(event) {
+      const zone = document.getElementById('post-media-dropzone');
+      if (zone && !zone.contains(event.relatedTarget)) {
+        zone.classList.remove('border-[#0a64d6]', 'bg-[#e3f3ff]');
+        zone.classList.add('border-[#9ec8ed]', 'bg-white/75');
+      }
+    }
+
+    function handleMediaDrop(event) {
+      event.preventDefault();
+      handleMediaDragLeave(event);
+      const files = event.dataTransfer && event.dataTransfer.files ? Array.from(event.dataTransfer.files) : [];
+      if (files.length > 0) {
+        stageMediaFiles(files);
+      }
+    }
+
+    function handlePostMediaSelection(event) {
+      const files = event.target && event.target.files ? Array.from(event.target.files) : [];
+      if (files.length > 0) {
+        stageMediaFiles(files);
+      }
+      event.target.value = '';
+    }
+
+    function stageMediaFiles(fileList) {
+      showPostMediaNotice('');
+      const rejected = [];
+
+      fileList.forEach(file => {
+        const isImage = file.type && file.type.startsWith('image/');
+        const isVideo = file.type && file.type.startsWith('video/');
+
+        if (!isImage && !isVideo) {
+          rejected.push(`"${file.name}" is not a supported image or video file.`);
+          return;
+        }
+
+        if (file.size > MAX_SINGLE_MEDIA_BYTES) {
+          rejected.push(`"${file.name}" (${(file.size / (1024 * 1024)).toFixed(1)} MB) exceeds the 12 MB per-file browser storage limit.`);
+          return;
+        }
+
+        const currentTotalBytes = stagedPostMedia.reduce((acc, item) => acc + (item.size || 0), 0);
+        if (currentTotalBytes + file.size > MAX_TOTAL_MEDIA_BYTES) {
+          rejected.push(`"${file.name}" would exceed the 24 MB combined post media limit.`);
+          return;
+        }
+
+        const mediaType = isVideo ? 'video' : 'image';
+        const stagedId = 'med_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          stagedPostMedia.push({
+            id: stagedId,
+            type: mediaType,
+            name: file.name,
+            size: file.size,
+            dataUrl: e.target.result
+          });
+          renderStagedMediaPreview();
+        };
+        reader.onerror = function() {
+          showPostMediaNotice(`Could not read "${file.name}". Please try another file.`);
+        };
+        reader.readAsDataURL(file);
+      });
+
+      if (rejected.length > 0) {
+        showPostMediaNotice(rejected.join(' '));
+      }
+    }
+
+    function removeStagedMedia(mediaId) {
+      stagedPostMedia = stagedPostMedia.filter(item => item.id !== mediaId);
+      renderStagedMediaPreview();
+    }
+
+    function clearAllStagedMedia() {
+      stagedPostMedia = [];
+      showPostMediaNotice('');
+      const fileInput = document.getElementById('post-media-files');
+      if (fileInput) fileInput.value = '';
+      renderStagedMediaPreview();
+    }
+
+    function renderStagedMediaPreview() {
+      const grid = document.getElementById('post-media-preview-grid');
+      const clearAllBtn = document.getElementById('clear-all-media-btn');
+      if (!grid) return;
+
+      if (stagedPostMedia.length === 0) {
+        grid.innerHTML = '';
+        grid.classList.add('hidden');
+        if (clearAllBtn) clearAllBtn.classList.add('hidden');
+        return;
+      }
+
+      if (clearAllBtn) clearAllBtn.classList.remove('hidden');
+      grid.classList.remove('hidden');
+
+      grid.innerHTML = stagedPostMedia.map(item => {
+        const sizeMB = ((item.size || 0) / (1024 * 1024)).toFixed(2);
+        const mediaEl = item.type === 'video'
+          ? `<video src="${item.dataUrl}" controls playsinline preload="metadata" class="w-full max-h-48 object-contain bg-[#091c36]"></video>`
+          : `<img src="${item.dataUrl}" alt="${escapeHTML(item.name)}" class="w-full max-h-48 object-contain bg-[#eef7ff]" />`;
+
+        return `
+          <div class="relative rounded-lg overflow-hidden border border-[#5ba2e6] bg-white/90 shadow-xs flex flex-col">
+            ${mediaEl}
+            <button
+              type="button"
+              onclick="removeStagedMedia('${item.id}')"
+              title="Remove ${escapeHTML(item.name)}"
+              class="win-btn win-btn-close absolute top-1.5 right-1.5"
+            >
+              <svg width="8" height="8" viewBox="0 0 9 9"><path d="M1.5 1.5L7.5 7.5M7.5 1.5L1.5 7.5" stroke="#fff" stroke-width="1.8"/></svg>
+            </button>
+            <div class="px-2 py-1 bg-[#e8f4ff] border-t border-[#b8dbf7] flex items-center justify-between gap-2 text-[10px] text-[#0c3f80]">
+              <span class="font-semibold truncate">${escapeHTML(item.name)}</span>
+              <span class="shrink-0 font-mono">${item.type.toUpperCase()} &bull; ${sizeMB} MB</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function resetPostComposer() {
+      document.getElementById('post-content-input').value = '';
+      const extraTagsEl = document.getElementById('post-extra-tags-input');
+      if (extraTagsEl) extraTagsEl.value = '';
+      clearAllStagedMedia();
+    }
+
+    function extractHashtags(...sources) {
+      const allTags = [];
+      sources.forEach(source => {
+        if (!source) return;
+        const matches = String(source).match(/#[a-zA-Z0-9_]{1,30}/g);
+        if (matches) {
+          matches.forEach(t => {
+            const lower = t.toLowerCase();
+            if (!allTags.includes(lower)) {
+              allTags.push(lower);
+            }
+          });
+        }
+      });
+      return allTags;
+    }
+
+    function formatPostBodyWithTags(text, extraTags = []) {
+      const escaped = escapeHTML(text);
+      let formatted = escaped.replace(/(#[a-zA-Z0-9_]{1,30})/g, (match) => {
+        return `<button type="button" onclick="filterByTag('${match.toLowerCase()}')" class="text-[#0a64d6] font-bold hover:underline cursor-pointer">${match}</button>`;
+      });
+
+      const inlineTags = extractHashtags(text);
+      const standaloneTags = (extraTags || []).filter(t => !inlineTags.includes(t.toLowerCase()));
+      if (standaloneTags.length > 0) {
+        const tagChips = standaloneTags.map(t =>
+          `<button type="button" onclick="filterByTag('${escapeHTML(t.toLowerCase())}')" class="px-1.5 py-0.5 rounded bg-[#d9efff] border border-[#6cb0ed] text-[11px] font-bold text-[#083b80] hover:bg-[#c2e4ff] cursor-pointer">${escapeHTML(t.toLowerCase())}</button>`
+        ).join(' ');
+        formatted += `<div class="mt-2 flex flex-wrap items-center gap-1.5">${tagChips}</div>`;
+      }
+
+      return formatted;
+    }
+
+    function getPostMediaList(post) {
+      if (Array.isArray(post.media) && post.media.length > 0) {
+        return post.media;
+      }
+      if (post.photo) {
+        return [{ id: 'legacy_photo_' + post.id, type: 'image', name: 'photo', dataUrl: post.photo }];
+      }
+      return [];
+    }
+
+    function submitNewPost(event) {
+      event.preventDefault();
+      if (!currentUser) {
+        openAuthModal('login');
+        return;
+      }
+
+      const content = document.getElementById('post-content-input').value.trim();
+      const extraTagsRaw = document.getElementById('post-extra-tags-input') ? document.getElementById('post-extra-tags-input').value.trim() : '';
+      if (!content) return;
+
+      const blocked = containsBlacklistedWord(content) || containsBlacklistedWord(extraTagsRaw);
+      if (blocked) {
+        showSystemDialog('Post Blocked', 'Your post or hashtags contain a word restricted by the platform blacklist.');
+        return;
+      }
+
+      const tags = extractHashtags(content, extraTagsRaw);
+      const mediaItems = stagedPostMedia.map(item => ({
+        id: item.id,
+        type: item.type,
+        name: item.name,
+        dataUrl: item.dataUrl
+      }));
+
+      const newPost = {
+        id: 'post_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+        authorId: currentUser.id,
+        content: content,
+        photo: mediaItems.length > 0 && mediaItems[0].type === 'image' ? mediaItems[0].dataUrl : '',
+        media: mediaItems,
+        tags: tags,
+        comments: [],
+        createdAt: new Date().toISOString()
+      };
+
+      try {
+        posts.unshift(newPost);
+        savePosts();
+      } catch (err) {
+        posts.shift();
+        showSystemDialog('Storage Limit Reached', 'Could not save this post because attached photo/video data exceeded available browser storage. Try a smaller file or fewer attachments.');
+        return;
+      }
+
+      resetPostComposer();
+      refreshAllUI();
+    }
+
+    function submitComment(event, postId) {
+      event.preventDefault();
+      if (!currentUser) {
+        openAuthModal('login');
+        return;
+      }
+
+      const input = document.getElementById(`comment-input-${postId}`);
+      if (!input) return;
+      const text = input.value.trim();
+      if (!text) return;
+
+      const blocked = containsBlacklistedWord(text);
+      if (blocked) {
+        showSystemDialog('Comment Blocked', 'Your comment contains a word restricted by the platform blacklist.');
+        return;
+      }
+
+      const post = posts.find(p => p.id === postId);
+      if (!post) return;
+
+      post.comments.push({
+        id: 'cmt_' + Date.now() + '_' + Math.random().toString(36).slice(2, 5),
+        authorId: currentUser.id,
+        text: text,
+        createdAt: new Date().toISOString()
+      });
+
+      savePosts();
+      renderPostsFeed();
+    }
+
+    function deletePost(postId) {
+      const post = posts.find(p => p.id === postId);
+      if (!post || !currentUser) return;
+      if (post.authorId !== currentUser.id && !isStaffUser()) return;
+
+      posts = posts.filter(p => p.id !== postId);
+      savePosts();
+      refreshAllUI();
+    }
+
+    function deleteComment(postId, commentId) {
+      const post = posts.find(p => p.id === postId);
+      if (!post || !currentUser) return;
+      const comment = post.comments.find(c => c.id === commentId);
+      if (!comment) return;
+      if (comment.authorId !== currentUser.id && !isStaffUser()) return;
+
+      post.comments = post.comments.filter(c => c.id !== commentId);
+      savePosts();
+      renderPostsFeed();
+    }
+
+    function clearTagFilter() {
+      clearUnifiedSearch();
+    }
+
+    function formatTimestamp(iso) {
+      try {
+        const d = new Date(iso);
+        return d.toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      } catch (e) {
+        return '';
+      }
+    }
+
+    // =========================================================================
+    // UI RENDERING: ACCOUNT SIDEBAR, SEARCH, FEED, DIRECTORY, INBOX, PINBOARD
+    // =========================================================================
+    function renderAccountSidebar() {
+      const loggedOutBox = document.getElementById('account-logged-out');
+      const loggedInBox = document.getElementById('account-logged-in');
+      const composerWin = document.getElementById('post-composer-window');
+      const staffNavBtn = document.getElementById('nav-btn-staff');
+      const ownerNavBtn = document.getElementById('nav-btn-owner');
+      const myProfileNavBtn = document.getElementById('nav-btn-myprofile');
+      const startProfileBtn = document.getElementById('start-menu-profile-btn');
+      const startStaffBtn = document.getElementById('start-menu-staff-btn');
+      const startOwnerBtn = document.getElementById('start-menu-owner-btn');
+      const startAuthBtn = document.getElementById('start-menu-auth-btn');
+
+      if (!currentUser) {
+        loggedOutBox.classList.remove('hidden');
+        loggedInBox.classList.add('hidden');
+        composerWin.classList.add('hidden');
+        staffNavBtn.classList.add('hidden');
+        ownerNavBtn.classList.add('hidden');
+        if (myProfileNavBtn) myProfileNavBtn.classList.add('hidden');
+        if (startProfileBtn) startProfileBtn.classList.add('hidden');
+        startStaffBtn.classList.add('hidden');
+        startOwnerBtn.classList.add('hidden');
+
+        document.getElementById('start-menu-username').textContent = 'Guest User';
+        document.getElementById('start-menu-avatar').classList.add('hidden');
+        document.getElementById('start-menu-default-icon').classList.remove('hidden');
+        startAuthBtn.textContent = 'Log In / Sign Up';
+        startAuthBtn.onclick = () => { openAuthModal('login'); toggleStartMenu(false); };
+      } else {
+        loggedOutBox.classList.add('hidden');
+        loggedInBox.classList.remove('hidden');
+        composerWin.classList.remove('hidden');
+        if (myProfileNavBtn) myProfileNavBtn.classList.remove('hidden');
+        if (startProfileBtn) startProfileBtn.classList.remove('hidden');
+
+        document.getElementById('current-user-avatar').src = currentUser.avatar || DEFAULT_AVATAR_SVG;
+        document.getElementById('current-user-displayname').textContent = currentUser.displayName;
+        document.getElementById('current-user-role-badge').innerHTML = getRoleBadgeHTML(currentUser.role);
+        document.getElementById('current-user-username').textContent = '@' + currentUser.username;
+        document.getElementById('current-user-status-text').textContent = currentUser.status || 'No status set';
+        document.getElementById('custom-status-input').value = currentUser.status || '';
+
+        const rels = getUserRelationships(currentUser.id);
+        document.getElementById('passport-friends-count').textContent = rels.friends.length;
+        document.getElementById('passport-followers-count').textContent = rels.followers.length;
+        document.getElementById('passport-following-count').textContent = rels.following.length;
+
+        const hasStaff = isStaffUser();
+        const hasOwner = isOwnerUser();
+        staffNavBtn.classList.toggle('hidden', !hasStaff);
+        startStaffBtn.classList.toggle('hidden', !hasStaff);
+        ownerNavBtn.classList.toggle('hidden', !hasOwner);
+        startOwnerBtn.classList.toggle('hidden', !hasOwner);
+
+        document.getElementById('start-menu-username').textContent = currentUser.displayName;
+        const smAvatar = document.getElementById('start-menu-avatar');
+        smAvatar.src = currentUser.avatar || DEFAULT_AVATAR_SVG;
+        smAvatar.classList.remove('hidden');
+        document.getElementById('start-menu-default-icon').classList.add('hidden');
+        startAuthBtn.textContent = 'Log Off (' + currentUser.username + ')';
+        startAuthBtn.onclick = () => { logoutUser(); toggleStartMenu(false); };
+      }
+      updateUnreadBadge();
+    }
+
+    function updateUnreadBadge() {
+      const badge = document.getElementById('inbox-unread-badge');
+      const dmBadge = document.getElementById('dm-unread-badge');
+      if (!currentUser) {
+        badge.classList.add('hidden');
+        if (dmBadge) dmBadge.classList.add('hidden');
+        return;
+      }
+      const unreadCount = notices.filter(n => n.recipientId === currentUser.id && !n.read).length;
+      if (unreadCount > 0) {
+        badge.textContent = unreadCount;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+
+      if (dmBadge) {
+        const unreadDMs = directMessages.filter(m => m.recipientId === currentUser.id && !m.read).length;
+        if (unreadDMs > 0) {
+          dmBadge.textContent = unreadDMs;
+          dmBadge.classList.remove('hidden');
+        } else {
+          dmBadge.classList.add('hidden');
+        }
+      }
+    }
+
+    function renderPostsFeed() {
+      const container = document.getElementById('posts-feed-container');
+
+      let filtered = [...posts];
+      if (activeAuthorFilterId) {
+        filtered = filtered.filter(p => p.authorId === activeAuthorFilterId);
+      } else if (activeTagFilter) {
+        filtered = filtered.filter(p => (p.tags || []).includes(activeTagFilter));
+      } else if (searchQuery) {
+        filtered = filtered.filter(p => {
+          const author = users.find(u => u.id === p.authorId);
+          const authorText = author ? `${author.username} ${author.displayName}`.toLowerCase() : '';
+          const tagsText = (p.tags || []).join(' ').toLowerCase();
+          return p.content.toLowerCase().includes(searchQuery) || authorText.includes(searchQuery) || tagsText.includes(searchQuery);
+        });
+      }
+
+      if (filtered.length === 0) {
+        const isFiltered = Boolean(activeAuthorFilterId || activeTagFilter || searchQuery);
+        container.innerHTML = `
+          <div class="p-6 rounded-lg bg-white/80 border border-[#9ac6ed] text-center space-y-2">
+            <p class="text-sm font-bold text-[#093e85]">${isFiltered ? 'No Matching Posts Found' : 'No Community Posts Yet'}</p>
+            <p class="text-xs text-[#376699]">${isFiltered ? 'No posts matched your current search or filter.' : 'This community space is brand new and completely clean. Sign up or log in to publish the very first post!'}</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(post => {
+        const author = users.find(u => u.id === post.authorId) || {
+          displayName: 'Unknown User',
+          username: 'unknown',
+          avatar: '',
+          role: 'Member',
+          status: ''
+        };
+        const canDelete = currentUser && (currentUser.id === post.authorId || isStaffUser());
+
+        const isSelf = currentUser && currentUser.id === post.authorId;
+        const followingAuthor = currentUser && !isSelf && isFollowingUser(currentUser.id, post.authorId);
+        const mutualFriend = currentUser && !isSelf && areFriends(currentUser.id, post.authorId);
+
+        return `
+          <article class="p-3.5 rounded-lg bg-white/88 border border-[#96c4ed] shadow-xs space-y-2.5">
+            <div class="flex items-start justify-between gap-2 border-b border-[#d6ebff] pb-2">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <img src="${author.avatar || DEFAULT_AVATAR_SVG}" alt="${escapeHTML(author.displayName)}" class="w-9 h-9 rounded-lg border border-[#3e95eb] object-cover shrink-0 bg-[#e6f4ff]" />
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <button type="button" onclick="filterByAuthor('${post.authorId}')" class="font-bold text-xs sm:text-sm text-[#073778] hover:underline truncate">${escapeHTML(author.displayName)}</button>
+                    ${getRoleBadgeHTML(author.role)}
+                    ${mutualFriend ? `<span class="px-1.5 py-0.2 rounded bg-[#d4f8d4] border border-[#24b351] text-[#0d5e24] text-[10px] font-bold">Friends</span>` : ''}
+                    <span class="text-[11px] font-mono text-[#4572a6]">@${escapeHTML(author.username)}</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-[10px] text-[#4d79ab] flex-wrap">
+                    <span>${formatTimestamp(post.createdAt)}</span>
+                    ${author.status ? `<span class="italic text-[#1a497d] truncate">&bull; ${escapeHTML(author.status)}</span>` : ''}
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-1.5 shrink-0">
+                ${currentUser && !isSelf && author.id ? `
+                  <button type="button" onclick="toggleFollowUser('${post.authorId}')" class="aqua-btn ${followingAuthor ? '' : 'aqua-btn-blue'} !py-0.5 !px-2 !text-[10px]">
+                    ${mutualFriend ? 'Friends ✓' : (followingAuthor ? 'Following' : 'Follow')}
+                  </button>
+                ` : ''}
+                ${canDelete ? `
+                  <button type="button" onclick="deletePost('${post.id}')" class="aqua-btn aqua-btn-red !py-0.5 !px-2 !text-[10px]" title="Delete Post">
+                    Delete
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+
+            <div class="text-xs sm:text-sm text-[#0f2947] whitespace-pre-wrap break-words leading-relaxed">${formatPostBodyWithTags(post.content, post.tags)}</div>
+
+            ${(() => {
+              const mediaList = getPostMediaList(post);
+              if (mediaList.length === 0) return '';
+              const gridCols = mediaList.length > 1 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1';
+              return `
+                <div class="grid ${gridCols} gap-2.5">
+                  ${mediaList.map(m => {
+                    if (m.type === 'video') {
+                      return `
+                        <div class="rounded-lg overflow-hidden border border-[#8abcf0] bg-[#081930]">
+                          <video src="${escapeHTML(m.dataUrl)}" controls playsinline preload="metadata" class="max-h-96 w-full object-contain mx-auto"></video>
+                        </div>
+                      `;
+                    }
+                    return `
+                      <div class="rounded-lg overflow-hidden border border-[#8abcf0] bg-[#eef7ff]">
+                        <img src="${escapeHTML(m.dataUrl)}" alt="${escapeHTML(m.name || 'Attached photo')}" onerror="this.style.display='none'" class="max-h-96 w-full object-contain mx-auto" />
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              `;
+            })()}
+
+            <!-- Comments Section -->
+            <div class="pt-2 border-t border-[#cde5fa] space-y-2">
+              <div class="space-y-1.5">
+                ${(post.comments || []).map(c => {
+                  const cAuthor = users.find(u => u.id === c.authorId) || { displayName: 'User', username: 'user', role: 'Member' };
+                  const canDelComment = currentUser && (currentUser.id === c.authorId || isStaffUser());
+                  return `
+                    <div class="p-2 rounded bg-[#eef7ff] border border-[#b8dbf7] flex items-start justify-between gap-2 text-xs">
+                      <div class="min-w-0">
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                          <span class="font-bold text-[#083b80]">${escapeHTML(cAuthor.displayName)}</span>
+                          ${getRoleBadgeHTML(cAuthor.role)}
+                          <span class="text-[10px] text-[#4d79ab]">${formatTimestamp(c.createdAt)}</span>
+                        </div>
+                        <p class="text-[#122e4f] mt-0.5 break-words">${escapeHTML(c.text)}</p>
+                      </div>
+                      ${canDelComment ? `<button type="button" onclick="deleteComment('${post.id}', '${c.id}')" class="text-[10px] text-[#c71d0e] font-bold hover:underline shrink-0">Remove</button>` : ''}
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+
+              ${currentUser ? `
+                <form onsubmit="submitComment(event, '${post.id}')" class="flex gap-1.5">
+                  <input type="text" id="comment-input-${post.id}" placeholder="Write a comment..." class="aero-input !py-1 !text-xs" required />
+                  <button type="submit" class="aqua-btn !py-1 !px-3 !text-xs shrink-0">Reply</button>
+                </form>
+              ` : `<p class="text-[11px] text-[#4572a6] italic">Log in to comment on this post.</p>`}
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function renderMembersDirectory() {
+      const container = document.getElementById('members-directory-list');
+      if (users.length === 0) {
+        container.innerHTML = `<div class="col-span-full p-5 rounded-lg bg-white/80 border border-[#9ac6ed] text-center text-xs text-[#356396]">No registered members yet. Create the first account to appear here!</div>`;
+        return;
+      }
+
+      container.innerHTML = users.map(u => {
+        const isSelf = currentUser && currentUser.id === u.id;
+        const following = currentUser && !isSelf && isFollowingUser(currentUser.id, u.id);
+        const friends = currentUser && !isSelf && areFriends(currentUser.id, u.id);
+        const followsYou = currentUser && !isSelf && isFollowingUser(u.id, currentUser.id);
+        return `
+          <div class="p-3 rounded-lg bg-white/88 border border-[#96c4ed] flex flex-col justify-between gap-2.5 shadow-xs">
+            <div class="flex items-start gap-2.5 min-w-0">
+              <img src="${u.avatar || DEFAULT_AVATAR_SVG}" alt="${escapeHTML(u.displayName)}" class="w-12 h-12 rounded-lg border border-[#3e95eb] object-cover shrink-0 bg-[#e6f4ff]" />
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="font-bold text-sm text-[#073778] truncate">${escapeHTML(u.displayName)}</span>
+                  ${getRoleBadgeHTML(u.role)}
+                  ${friends ? `<span class="px-1.5 py-0.2 rounded bg-[#d4f8d4] border border-[#24b351] text-[#0d5e24] text-[10px] font-bold">Friend</span>` : (followsYou ? `<span class="px-1.5 py-0.2 rounded bg-[#e1f1ff] border border-[#6cb0ed] text-[#083b80] text-[10px] font-semibold">Follows you</span>` : '')}
+                  ${u.banned ? `<span class="px-1.5 py-0.2 rounded bg-[#e02414] text-white text-[10px] font-bold">BANNED</span>` : ''}
+                </div>
+                <p class="text-[11px] font-mono text-[#4572a6] truncate">@${escapeHTML(u.username)}</p>
+                <p class="text-[11px] text-[#1a497d] italic truncate mt-0.5">${u.status ? escapeHTML(u.status) : 'No status set'}</p>
+                ${u.bio ? `<p class="text-[11px] text-[#284c75] mt-1 line-clamp-2 break-words">${escapeHTML(u.bio)}</p>` : ''}
+              </div>
+            </div>
+            <div class="flex items-center justify-end gap-1.5 pt-1 border-t border-[#d6ebff] flex-wrap">
+              ${currentUser && !isSelf ? `
+                <button type="button" onclick="toggleFollowUser('${u.id}')" class="aqua-btn ${following ? '' : 'aqua-btn-blue'} !py-1 !px-2.5 !text-[11px]">
+                  ${friends ? 'Friends (Unfollow)' : (following ? 'Following' : (followsYou ? 'Follow Back' : 'Follow'))}
+                </button>
+              ` : ''}
+              ${friends ? `
+                <button type="button" onclick="openDmWithUser('${u.id}')" class="aqua-btn aqua-btn-green !py-1 !px-2.5 !text-[11px]">DM</button>
+              ` : ''}
+              ${isSelf ? `
+                <button type="button" onclick="openMyProfileView()" class="aqua-btn aqua-btn-blue !py-1 !px-2.5 !text-[11px]">My Profile</button>
+              ` : ''}
+              <button type="button" onclick="filterByAuthor('${u.id}')" class="aqua-btn !py-1 !px-2.5 !text-[11px]">Posts</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderInbox() {
+      const container = document.getElementById('user-inbox-container');
+      if (!currentUser) {
+        container.innerHTML = `<div class="p-5 rounded-lg bg-white/80 border border-[#9ac6ed] text-center text-xs text-[#356396]">Please log in to view your private system notices.</div>`;
+        return;
+      }
+
+      const myNotices = notices.filter(n => n.recipientId === currentUser.id);
+      let changed = false;
+      myNotices.forEach(n => {
+        if (!n.read) {
+          n.read = true;
+          changed = true;
+        }
+      });
+      if (changed) {
+        saveNotices();
+        updateUnreadBadge();
+      }
+
+      if (myNotices.length === 0) {
+        container.innerHTML = `<div class="p-5 rounded-lg bg-white/80 border border-[#9ac6ed] text-center text-xs text-[#356396]">You have no private system notices.</div>`;
+        return;
+      }
+
+      container.innerHTML = myNotices.map(n => `
+        <div class="p-3.5 rounded-lg bg-[#fffbe6] border border-[#e0b422] space-y-1 shadow-xs">
+          <div class="flex items-center justify-between text-[11px] text-[#7a5800]">
+            <span class="font-bold uppercase tracking-wide">Official System Notice</span>
+            <span>${formatTimestamp(n.createdAt)}</span>
+          </div>
+          <p class="text-xs sm:text-sm font-semibold text-[#2b1e00] break-words">Important: ${escapeHTML(n.message)}</p>
+        </div>
+      `).join('');
+    }
+
+    function toggleLikeAnnouncement(annId) {
+      if (!currentUser) {
+        openAuthModal('login');
+        return;
+      }
+      const ann = announcements.find(a => a.id === annId);
+      if (!ann) return;
+      if (!Array.isArray(ann.likes)) ann.likes = [];
+      const idx = ann.likes.indexOf(currentUser.id);
+      if (idx === -1) {
+        ann.likes.push(currentUser.id);
+      } else {
+        ann.likes.splice(idx, 1);
+      }
+      saveAnnouncements();
+      renderPinboard();
+    }
+
+    function removeAnnouncementLike(annId, targetUserId) {
+      if (!isStaffUser()) return;
+      const ann = announcements.find(a => a.id === annId);
+      if (!ann || !Array.isArray(ann.likes)) return;
+      ann.likes = ann.likes.filter(uid => uid !== targetUserId);
+      saveAnnouncements();
+      renderPinboard();
+    }
+
+    function clearAllAnnouncementLikes(annId) {
+      if (!isStaffUser()) return;
+      const ann = announcements.find(a => a.id === annId);
+      if (!ann) return;
+      ann.likes = [];
+      saveAnnouncements();
+      renderPinboard();
+    }
+
+    function renderPinboard() {
+      const container = document.getElementById('pinboard-announcements-list');
+      if (announcements.length === 0) {
+        container.innerHTML = `<div class="p-3 rounded bg-white/75 border border-[#a8cff2] text-[11px] text-[#3a699c] italic">No public announcements posted yet.</div>`;
+        return;
+      }
+
+      const staffMode = isStaffUser();
+      container.innerHTML = announcements.map(ann => {
+        const likes = Array.isArray(ann.likes) ? ann.likes : [];
+        const hasLiked = currentUser && likes.includes(currentUser.id);
+
+        let staffLikesHtml = '';
+        if (staffMode && likes.length > 0) {
+          const likerChips = likes.map(uid => {
+            const u = users.find(usr => usr.id === uid);
+            const label = u ? '@' + u.username : 'Unknown User';
+            return `
+              <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#eef7ff] border border-[#9ec8ed] text-[10px] text-[#083b80]">
+                <span>${escapeHTML(label)}</span>
+                <button type="button" onclick="removeAnnouncementLike('${ann.id}', '${uid}')" title="Delete this like" class="text-[#c71d0e] font-bold hover:underline ml-0.5">x</button>
+              </span>
+            `;
+          }).join('');
+          staffLikesHtml = `
+            <div class="pt-1.5 mt-1 border-t border-[#d6ebff] space-y-1">
+              <div class="flex items-center justify-between text-[10px] text-[#356396]">
+                <span class="font-bold">Liked by (${likes.length}):</span>
+                <button type="button" onclick="clearAllAnnouncementLikes('${ann.id}')" class="text-[#c71d0e] font-bold hover:underline">Delete All Likes</button>
+              </div>
+              <div class="flex flex-wrap gap-1">${likerChips}</div>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="p-2.5 rounded-lg bg-white/88 border border-[#8abcf0] space-y-1.5 shadow-xs">
+            <div class="flex items-start justify-between gap-2">
+              <h4 class="text-xs font-bold text-[#073a80]">${escapeHTML(ann.title)}</h4>
+              ${staffMode ? `<button type="button" onclick="deleteAnnouncement('${ann.id}')" class="text-[10px] text-[#c71d0e] font-bold hover:underline shrink-0">Remove</button>` : ''}
+            </div>
+            <p class="text-[11px] text-[#143357] whitespace-pre-wrap break-words">${escapeHTML(ann.body)}</p>
+            <div class="flex items-center justify-between gap-2 pt-0.5">
+              <p class="text-[10px] text-[#527fb0]">System Announcement &bull; ${formatTimestamp(ann.createdAt)}</p>
+              <button type="button" onclick="toggleLikeAnnouncement('${ann.id}')" class="aqua-btn ${hasLiked ? 'aqua-btn-blue' : ''} !py-0.5 !px-2 !text-[10px]">
+                <span>&#9829; ${likes.length}</span>
+              </button>
+            </div>
+            ${staffLikesHtml}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function updateTelemetryStats() {
+      document.getElementById('stat-total-users').textContent = users.length;
+      document.getElementById('stat-total-posts').textContent = posts.length;
+    }
+
+    // =========================================================================
+    // STAFF STUDIO & OWNER-ONLY CUSTOMIZER
+    // =========================================================================
+    function submitPinboardAnnouncement(event) {
+      event.preventDefault();
+      if (!isStaffUser()) return;
+      const title = document.getElementById('pinboard-title-input').value.trim();
+      const body = document.getElementById('pinboard-body-input').value.trim();
+      if (!title || !body) return;
+
+      announcements.unshift({
+        id: 'ann_' + Date.now(),
+        title,
+        body,
+        likes: [],
+        createdAt: new Date().toISOString()
+      });
+      saveAnnouncements();
+      document.getElementById('pinboard-title-input').value = '';
+      document.getElementById('pinboard-body-input').value = '';
+      renderPinboard();
+      showSystemDialog('Pinboard Updated', 'Your anonymous announcement is now live on the Public Pinboard.');
+    }
+
+    function deleteAnnouncement(annId) {
+      if (!isStaffUser()) return;
+      announcements = announcements.filter(a => a.id !== annId);
+      saveAnnouncements();
+      renderPinboard();
+    }
+
+    function sendAnonymousStaffNotice(event) {
+      event.preventDefault();
+      if (!isStaffUser()) return;
+      const recipientId = document.getElementById('staff-notice-recipient').value;
+      const rawMsg = document.getElementById('staff-notice-message').value.trim().replace(/^Important:\s*/i, '');
+      if (!recipientId || !rawMsg) return;
+
+      notices.unshift({
+        id: 'ntc_' + Date.now(),
+        recipientId,
+        message: rawMsg,
+        read: false,
+        createdAt: new Date().toISOString()
+      });
+      saveNotices();
+      document.getElementById('staff-notice-message').value = '';
+      updateUnreadBadge();
+      showSystemDialog('Notice Delivered', `Delivered privately as: "Important: ${rawMsg}" (Sender identity hidden).`);
+    }
+
+    function addBlacklistWord(event) {
+      event.preventDefault();
+      if (!isStaffUser()) return;
+      const input = document.getElementById('blacklist-word-input');
+      const word = input.value.trim().toLowerCase();
+      if (!word) return;
+      if (!blacklist.includes(word)) {
+        blacklist.push(word);
+        saveBlacklist();
+      }
+      input.value = '';
+      renderStaffStudio();
+    }
+
+    function removeBlacklistWord(word) {
+      if (!isStaffUser()) return;
+      blacklist = blacklist.filter(w => w !== word);
+      saveBlacklist();
+      renderStaffStudio();
+    }
+
+    function toggleBanUser(userId) {
+      if (!isStaffUser()) return;
+      const target = users.find(u => u.id === userId);
+      if (!target || target.username.trim().toLowerCase() === 'laneexx') return;
+      target.banned = !target.banned;
+      saveUsers();
+      renderStaffStudio();
+    }
+
+    function changeUserStaffRole(userId, newRole) {
+      if (!isOwnerUser()) {
+        showSystemDialog('Owner Only', 'Only laneexx (Owner) can assign permanent Admin or Moderator roles.');
+        return;
+      }
+      const target = users.find(u => u.id === userId);
+      if (!target || target.username.trim().toLowerCase() === 'laneexx') return;
+      target.role = newRole;
+      saveUsers();
+      refreshAllUI();
+      showSystemDialog('Role Updated', `${target.displayName} (@${target.username}) is now permanently assigned the role: ${newRole}.`);
+    }
+
+    function renderStaffStudio() {
+      if (!isStaffUser()) return;
+
+      const select = document.getElementById('staff-notice-recipient');
+      select.innerHTML = `<option value="">-- Select Registered User --</option>` +
+        users.map(u => `<option value="${u.id}">${escapeHTML(u.displayName)} (@${escapeHTML(u.username)})</option>`).join('');
+
+      const sentNoticesContainer = document.getElementById('staff-sent-notices-list');
+      if (sentNoticesContainer) {
+        if (notices.length === 0) {
+          sentNoticesContainer.innerHTML = `<p class="text-[11px] text-[#4572a6] italic">No system messages have been sent to users yet.</p>`;
+        } else {
+          sentNoticesContainer.innerHTML = notices.map(n => {
+            const recip = users.find(u => u.id === n.recipientId);
+            const recipLabel = recip ? `${recip.displayName} (@${recip.username})` : 'Deleted User';
+            return `
+              <div class="p-2.5 rounded bg-[#fffbe6] border border-[#e0b422] flex items-start justify-between gap-2 text-xs">
+                <div class="min-w-0">
+                  <div class="text-[10px] font-bold text-[#7a5800]">To: ${escapeHTML(recipLabel)} &bull; ${formatTimestamp(n.createdAt)}</div>
+                  <p class="text-[#2b1e00] break-words mt-0.5">Important: ${escapeHTML(n.message)}</p>
+                </div>
+                <button type="button" onclick="deleteStaffSystemNotice('${n.id}')" class="aqua-btn aqua-btn-red !py-0.5 !px-2 !text-[10px] shrink-0">Delete</button>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+
+      const blContainer = document.getElementById('blacklist-words-list');
+      if (blacklist.length === 0) {
+        blContainer.innerHTML = `<span class="text-[11px] text-[#4572a6] italic">No words currently blacklisted.</span>`;
+      } else {
+        blContainer.innerHTML = blacklist.map(w => `
+          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#ffe8e6] border border-[#e06c60] text-[11px] font-semibold text-[#7a1208]">
+            <span>${escapeHTML(w)}</span>
+            <button type="button" onclick="removeBlacklistWord('${escapeHTML(w)}')" class="font-bold hover:text-black">x</button>
+          </span>
+        `).join('');
+      }
+
+      const table = document.getElementById('staff-users-table');
+      if (users.length === 0) {
+        table.innerHTML = `<p class="text-xs text-[#4572a6]">No users registered yet.</p>`;
+        return;
+      }
+
+      const ownerViewing = isOwnerUser();
+      table.innerHTML = users.map(u => {
+        const isLaneexx = u.username.trim().toLowerCase() === 'laneexx';
+        return `
+          <div class="p-2.5 rounded bg-[#f2f8ff] border border-[#b5d8f7] flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="font-bold text-[#073778]">${escapeHTML(u.displayName)}</span>
+                ${getRoleBadgeHTML(u.role)}
+                <span class="font-mono text-[11px] text-[#4572a6]">@${escapeHTML(u.username)}</span>
+                ${u.banned ? `<span class="px-1.5 py-0.2 rounded bg-[#e02414] text-white text-[10px] font-bold">BANNED</span>` : ''}
+              </div>
+            </div>
+            <div class="flex items-center gap-1.5 flex-wrap">
+              ${ownerViewing && !isLaneexx ? `
+                <select onchange="changeUserStaffRole('${u.id}', this.value)" class="aero-input !py-0.5 !px-1.5 !text-[11px] !w-auto">
+                  <option value="Member" ${u.role === 'Member' ? 'selected' : ''}>Member</option>
+                  <option value="Moderator" ${u.role === 'Moderator' ? 'selected' : ''}>Moderator</option>
+                  <option value="Admin" ${u.role === 'Admin' ? 'selected' : ''}>Admin</option>
+                </select>
+              ` : ''}
+              ${!isLaneexx ? `
+                <button type="button" onclick="toggleBanUser('${u.id}')" class="aqua-btn ${u.banned ? 'aqua-btn-green' : 'aqua-btn-red'} !py-0.5 !px-2 !text-[11px]">
+                  ${u.banned ? 'Unban' : 'Ban User'}
+                </button>
+              ` : `<span class="text-[10px] font-bold text-[#8a5800]">Site Owner</span>`}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Owner Customizer Controls
+    function applySiteConfigToDOM() {
+      Object.entries(siteConfig.texts).forEach(([key, val]) => {
+        document.querySelectorAll(`[data-editable-key="${key}"]`).forEach(el => {
+          if (document.activeElement !== el) {
+            el.textContent = val;
+          }
+        });
+      });
+
+      const logoImg = document.getElementById('custom-logo-img');
+      const defaultLogo = document.getElementById('default-logo-svg');
+      if (siteConfig.logoUrl) {
+        logoImg.src = siteConfig.logoUrl;
+        logoImg.classList.remove('hidden');
+        defaultLogo.classList.add('hidden');
+      } else {
+        logoImg.classList.add('hidden');
+        defaultLogo.classList.remove('hidden');
+      }
+
+      const wallpaper = document.getElementById('aero-wallpaper');
+      const hills = document.getElementById('default-hills-svg');
+      if (siteConfig.wallpaperUrl) {
+        wallpaper.style.backgroundImage = `url("${siteConfig.wallpaperUrl}")`;
+        hills.classList.add('hidden');
+      } else {
+        wallpaper.style.backgroundImage = '';
+        hills.classList.remove('hidden');
+      }
+
+      document.documentElement.style.setProperty('--aero-title-start', siteConfig.titleColor || '#0855dd');
+      const opacityDecimal = (siteConfig.glassOpacity || 78) / 100;
+      document.documentElement.style.setProperty('--aero-glass-bg', `rgba(242, 249, 255, ${opacityDecimal})`);
+    }
+
+    function toggleInlineTextEdit() {
+      if (!isOwnerUser()) return;
+      inlineEditEnabled = !inlineEditEnabled;
+      document.body.classList.toggle('inline-edit-active', inlineEditEnabled);
+      const btn = document.getElementById('toggle-inline-edit-btn');
+      if (btn) {
+        btn.textContent = inlineEditEnabled ? 'Disable Inline Edit (Editing Active)' : 'Enable Inline Edit';
+        btn.classList.toggle('aqua-btn-green', inlineEditEnabled);
+      }
+
+      document.querySelectorAll('[data-editable-key]').forEach(el => {
+        if (inlineEditEnabled) {
+          el.setAttribute('contenteditable', 'true');
+          el.onblur = function() {
+            const k = el.getAttribute('data-editable-key');
+            if (k) {
+              siteConfig.texts[k] = el.textContent;
+              saveSiteConfig();
+            }
+          };
+        } else {
+          el.removeAttribute('contenteditable');
+          el.onblur = null;
+        }
+      });
+    }
+
+    function handleSiteLogoUpload(event) {
+      if (!isOwnerUser()) return;
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        siteConfig.logoUrl = e.target.result;
+        saveSiteConfig();
+        applySiteConfigToDOM();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function applyLogoUrl() {
+      if (!isOwnerUser()) return;
+      const url = document.getElementById('owner-logo-url-input').value.trim();
+      siteConfig.logoUrl = url;
+      saveSiteConfig();
+      applySiteConfigToDOM();
+    }
+
+    function handleWallpaperUpload(event) {
+      if (!isOwnerUser()) return;
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        siteConfig.wallpaperUrl = e.target.result;
+        saveSiteConfig();
+        applySiteConfigToDOM();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function applyWallpaperUrl() {
+      if (!isOwnerUser()) return;
+      const url = document.getElementById('owner-bg-url-input').value.trim();
+      siteConfig.wallpaperUrl = url;
+      saveSiteConfig();
+      applySiteConfigToDOM();
+    }
+
+    function updateAeroColors() {
+      if (!isOwnerUser()) return;
+      siteConfig.titleColor = document.getElementById('owner-title-color').value;
+      siteConfig.glassOpacity = parseInt(document.getElementById('owner-glass-opacity').value, 10) || 78;
+      saveSiteConfig();
+      applySiteConfigToDOM();
+    }
+
+    function resetSiteVisuals() {
+      if (!isOwnerUser()) return;
+      siteConfig.logoUrl = '';
+      siteConfig.wallpaperUrl = '';
+      siteConfig.titleColor = '#0855dd';
+      siteConfig.glassOpacity = 78;
+      saveSiteConfig();
+      applySiteConfigToDOM();
+      renderOwnerCustomizer();
+    }
+
+    function renderOwnerCustomizer() {
+      if (!isOwnerUser()) return;
+      document.getElementById('owner-title-color').value = siteConfig.titleColor || '#0855dd';
+      document.getElementById('owner-glass-opacity').value = siteConfig.glassOpacity || 78;
+
+      const list = document.getElementById('owner-text-fields-list');
+      list.innerHTML = Object.entries(siteConfig.texts).map(([key, val]) => `
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5 items-center bg-[#f4f9ff] p-2 rounded border border-[#c5e1fa]">
+          <label class="text-[11px] font-mono text-[#0a3c7d] truncate" title="${escapeHTML(key)}">${escapeHTML(key)}</label>
+          <input type="text" data-config-text-key="${escapeHTML(key)}" value="${escapeHTML(val)}" class="aero-input !py-1 !text-xs sm:col-span-2" />
+        </div>
+      `).join('');
+    }
+
+    function saveAllCustomTexts() {
+      if (!isOwnerUser()) return;
+      document.querySelectorAll('[data-config-text-key]').forEach(input => {
+        const k = input.getAttribute('data-config-text-key');
+        if (k) {
+          siteConfig.texts[k] = input.value;
+        }
+      });
+      saveSiteConfig();
+      applySiteConfigToDOM();
+      showSystemDialog('Website Updated', 'All custom website texts have been saved and applied.');
+    }
+
+    // =========================================================================
+    // AMBIENT FRUTIGER AERO BUBBLES & LIVE XP CLOCK
+    // =========================================================================
+    function spawnAeroBubbles() {
+      const layer = document.getElementById('bubble-layer');
+      if (!layer) return;
+      layer.innerHTML = '';
+      const count = 18;
+      for (let i = 0; i < count; i++) {
+        const b = document.createElement('div');
+        b.className = 'aero-bubble';
+        const size = 14 + Math.floor(Math.random() * 44);
+        b.style.width = size + 'px';
+        b.style.height = size + 'px';
+        b.style.left = Math.floor(Math.random() * 98) + '%';
+        b.style.animationDuration = (11 + Math.random() * 14) + 's';
+        b.style.animationDelay = (-Math.random() * 18) + 's';
+        layer.appendChild(b);
+      }
+    }
+
+    function updateTaskbarClock() {
+      const clock = document.getElementById('xp-live-clock');
+      if (!clock) return;
+      const now = new Date();
+      clock.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function deleteStaffSystemNotice(noticeId) {
+      if (!isStaffUser()) return;
+      notices = notices.filter(n => n.id !== noticeId);
+      saveNotices();
+      updateUnreadBadge();
+      renderStaffStudio();
+      if (!document.getElementById('view-inbox').classList.contains('hidden')) renderInbox();
+    }
+
+    // =========================================================================
+    // FOLLOWING, MUTUAL FRIENDS & PRIVATE DIRECT MESSAGES (DMs)
+    // =========================================================================
+    function isFollowingUser(followerId, targetId) {
+      const follower = users.find(u => u.id === followerId);
+      if (!follower || !Array.isArray(follower.following)) return false;
+      return follower.following.includes(targetId);
+    }
+
+    function areFriends(userIdA, userIdB) {
+      if (!userIdA || !userIdB || userIdA === userIdB) return false;
+      return isFollowingUser(userIdA, userIdB) && isFollowingUser(userIdB, userIdA);
+    }
+
+    function getUserRelationships(userId) {
+      const user = users.find(u => u.id === userId);
+      if (!user) return { following: [], followers: [], friends: [] };
+      const followingIds = Array.isArray(user.following) ? user.following : [];
+      const following = users.filter(u => followingIds.includes(u.id));
+      const followers = users.filter(u => Array.isArray(u.following) && u.following.includes(userId));
+      const friends = following.filter(u => Array.isArray(u.following) && u.following.includes(userId));
+      return { following, followers, friends };
+    }
+
+    function toggleFollowUser(targetUserId) {
+      if (!currentUser) {
+        openAuthModal('login');
+        return;
+      }
+      if (currentUser.id === targetUserId) return;
+      const target = users.find(u => u.id === targetUserId);
+      if (!target) return;
+
+      if (!Array.isArray(currentUser.following)) currentUser.following = [];
+      const idx = currentUser.following.indexOf(targetUserId);
+      let becameFriends = false;
+
+      if (idx === -1) {
+        currentUser.following.push(targetUserId);
+        if (isFollowingUser(targetUserId, currentUser.id)) {
+          becameFriends = true;
+        }
+      } else {
+        currentUser.following.splice(idx, 1);
+      }
+
+      const uIdx = users.findIndex(u => u.id === currentUser.id);
+      if (uIdx !== -1) users[uIdx].following = [...currentUser.following];
+      saveUsers();
+      refreshAllUI();
+
+      if (becameFriends) {
+        showSystemDialog('New Friend!', `You and ${target.displayName} (@${target.username}) follow each other now — you are friends and can DM each other privately!`);
+      }
+    }
+
+    function openMyProfileView(tab = 'friends') {
+      if (!currentUser) {
+        openAuthModal('login');
+        return;
+      }
+      activeProfileTab = tab;
+      switchMainView('my-profile');
+    }
+
+    function setMyProfileTab(tab) {
+      activeProfileTab = tab;
+      renderMyProfile();
+    }
+
+    function saveInlineProfileDetails(event) {
+      event.preventDefault();
+      if (!currentUser) return;
+      const bioVal = document.getElementById('profile-view-bio-input').value.trim();
+      const statusVal = document.getElementById('profile-view-status-input').value.trim();
+      const avatarUrlVal = document.getElementById('profile-view-avatar-url').value.trim();
+
+      const blocked = containsBlacklistedWord(bioVal) || containsBlacklistedWord(statusVal);
+      if (blocked) {
+        showSystemDialog('Blocked Word', 'Your bio or status contains a word restricted by the platform blacklist.');
+        return;
+      }
+
+      currentUser.bio = bioVal;
+      currentUser.status = statusVal;
+      if (avatarUrlVal) {
+        currentUser.avatar = avatarUrlVal;
+      }
+
+      const idx = users.findIndex(u => u.id === currentUser.id);
+      if (idx !== -1) users[idx] = { ...currentUser };
+      saveUsers();
+      refreshAllUI();
+      showSystemDialog('Profile Saved', 'Your profile picture, bio, and status have been updated.');
+    }
+
+    function handleProfileViewAvatarFile(event) {
+      if (!currentUser) return;
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        currentUser.avatar = e.target.result;
+        const idx = users.findIndex(u => u.id === currentUser.id);
+        if (idx !== -1) users[idx].avatar = currentUser.avatar;
+        saveUsers();
+        refreshAllUI();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function renderMyProfile() {
+      const container = document.getElementById('my-profile-container');
+      if (!container) return;
+      if (!currentUser) {
+        container.innerHTML = `<div class="p-5 rounded-lg bg-white/80 border border-[#9ac6ed] text-center text-xs text-[#356396]">Please log in to view your profile.</div>`;
+        return;
+      }
+
+      const rels = getUserRelationships(currentUser.id);
+      const listToShow = activeProfileTab === 'followers'
+        ? rels.followers
+        : (activeProfileTab === 'following' ? rels.following : rels.friends);
+
+      container.innerHTML = `
+        <div class="p-4 rounded-lg bg-white/88 border border-[#8abcf0] space-y-3 shadow-xs">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-3.5 min-w-0">
+              <img src="${currentUser.avatar || DEFAULT_AVATAR_SVG}" alt="${escapeHTML(currentUser.displayName)}" class="w-16 h-16 rounded-xl border-2 border-[#3b93eb] object-cover shrink-0 bg-[#e6f4ff] shadow" />
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <h2 class="text-base sm:text-lg font-bold text-[#073778] truncate">${escapeHTML(currentUser.displayName)}</h2>
+                  ${getRoleBadgeHTML(currentUser.role)}
+                </div>
+                <p class="text-xs font-mono text-[#4572a6]">@${escapeHTML(currentUser.username)}</p>
+                <p class="text-xs text-[#1a497d] italic mt-0.5">${currentUser.status ? escapeHTML(currentUser.status) : 'No status set'}</p>
+              </div>
+            </div>
+            <div class="grid grid-cols-3 gap-2 text-center bg-[#eef7ff] p-2 rounded-lg border border-[#a8cff2] shrink-0">
+              <button type="button" onclick="setMyProfileTab('friends')" class="px-2.5 py-1 rounded ${activeProfileTab === 'friends' ? 'bg-[#cce7ff] font-bold' : 'hover:bg-white/70'}">
+                <div class="text-sm font-bold text-[#073778]">${rels.friends.length}</div>
+                <div class="text-[10px] text-[#3c6ba1]">Friends</div>
+              </button>
+              <button type="button" onclick="setMyProfileTab('followers')" class="px-2.5 py-1 rounded border-x border-[#c5e1fa] ${activeProfileTab === 'followers' ? 'bg-[#cce7ff] font-bold' : 'hover:bg-white/70'}">
+                <div class="text-sm font-bold text-[#073778]">${rels.followers.length}</div>
+                <div class="text-[10px] text-[#3c6ba1]">Followers</div>
+              </button>
+              <button type="button" onclick="setMyProfileTab('following')" class="px-2.5 py-1 rounded ${activeProfileTab === 'following' ? 'bg-[#cce7ff] font-bold' : 'hover:bg-white/70'}">
+                <div class="text-sm font-bold text-[#073778]">${rels.following.length}</div>
+                <div class="text-[10px] text-[#3c6ba1]">Following</div>
+              </button>
+            </div>
+          </div>
+
+          <div class="p-2.5 rounded bg-[#f4faff] border border-[#c5e1fa] text-xs text-[#143357]">
+            <span class="font-bold text-[#0c4185]">Bio:</span>
+            <span>${currentUser.bio ? escapeHTML(currentUser.bio) : '<span class="italic text-[#527fb0]">No bio added yet.</span>'}</span>
+          </div>
+
+          <!-- Quick Edit Profile Picture, Status & Bio -->
+          <form onsubmit="saveInlineProfileDetails(event)" class="pt-2 border-t border-[#d6ebff] space-y-2.5">
+            <h3 class="text-xs font-bold text-[#073a80]">Customize Your Profile Picture, Status &amp; Bio</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div>
+                <label class="block text-[11px] font-bold text-[#0c4185] mb-1">Upload Profile Picture:</label>
+                <input type="file" accept="image/*" onchange="handleProfileViewAvatarFile(event)" class="aero-input !text-xs !py-1" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-[#0c4185] mb-1">Or Profile Picture URL:</label>
+                <input type="url" id="profile-view-avatar-url" value="${currentUser.avatar && !currentUser.avatar.startsWith('data:') ? escapeHTML(currentUser.avatar) : ''}" placeholder="https://..." class="aero-input !text-xs !py-1" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-[#0c4185] mb-1">Status:</label>
+              <input type="text" id="profile-view-status-input" maxlength="80" value="${escapeHTML(currentUser.status || '')}" placeholder="Write your custom status..." class="aero-input !text-xs !py-1.5" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-[#0c4185] mb-1">Bio:</label>
+              <textarea id="profile-view-bio-input" rows="2" maxlength="240" placeholder="Write a short bio about yourself..." class="aero-input !text-xs resize-none">${escapeHTML(currentUser.bio || '')}</textarea>
+            </div>
+            <div class="flex justify-end">
+              <button type="submit" class="aqua-btn aqua-btn-green">Save Profile Changes</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Connections List (Friends / Followers / Following) -->
+        <div class="p-3.5 rounded-lg bg-white/88 border border-[#8abcf0] space-y-2.5 shadow-xs">
+          <div class="flex flex-wrap items-center gap-2 border-b border-[#c5e1fa] pb-2">
+            <button type="button" onclick="setMyProfileTab('friends')" class="aqua-btn ${activeProfileTab === 'friends' ? 'aqua-btn-blue' : ''} !py-1 !px-3 !text-xs">
+              Friends (${rels.friends.length})
+            </button>
+            <button type="button" onclick="setMyProfileTab('followers')" class="aqua-btn ${activeProfileTab === 'followers' ? 'aqua-btn-blue' : ''} !py-1 !px-3 !text-xs">
+              Followers (${rels.followers.length})
+            </button>
+            <button type="button" onclick="setMyProfileTab('following')" class="aqua-btn ${activeProfileTab === 'following' ? 'aqua-btn-blue' : ''} !py-1 !px-3 !text-xs">
+              Following (${rels.following.length})
+            </button>
+          </div>
+
+          <div class="space-y-2">
+            ${listToShow.length === 0 ? `
+              <p class="text-xs text-[#4572a6] italic py-3 text-center">
+                ${activeProfileTab === 'friends' ? 'No friends yet. Follow someone who follows you back to become friends!' : (activeProfileTab === 'followers' ? 'Nobody is following you yet.' : 'You are not following anyone yet.')}
+              </p>
+            ` : listToShow.map(person => {
+              const iFollow = isFollowingUser(currentUser.id, person.id);
+              const friend = areFriends(currentUser.id, person.id);
+              return `
+                <div class="p-2.5 rounded bg-[#f2f8ff] border border-[#b5d8f7] flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <img src="${person.avatar || DEFAULT_AVATAR_SVG}" alt="${escapeHTML(person.displayName)}" class="w-9 h-9 rounded-lg border border-[#3e95eb] object-cover shrink-0" />
+                    <div class="min-w-0">
+                      <div class="flex items-center gap-1.5 flex-wrap">
+                        <span class="font-bold text-xs text-[#073778] truncate">${escapeHTML(person.displayName)}</span>
+                        ${getRoleBadgeHTML(person.role)}
+                      </div>
+                      <p class="text-[11px] font-mono text-[#4572a6] truncate">@${escapeHTML(person.username)}</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-1.5 shrink-0">
+                    ${friend ? `<button type="button" onclick="openDmWithUser('${person.id}')" class="aqua-btn aqua-btn-green !py-0.5 !px-2 !text-[11px]">DM</button>` : ''}
+                    <button type="button" onclick="toggleFollowUser('${person.id}')" class="aqua-btn ${iFollow ? '' : 'aqua-btn-blue'} !py-0.5 !px-2 !text-[11px]">
+                      ${iFollow ? 'Unfollow' : 'Follow Back'}
+                    </button>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function openDmWithUser(partnerId) {
+      if (!currentUser) {
+        openAuthModal('login');
+        return;
+      }
+      if (!areFriends(currentUser.id, partnerId)) {
+        showSystemDialog('Friends Only', 'You can only send private DMs when you and this user follow each other.');
+        return;
+      }
+      activeDmPartnerId = partnerId;
+      switchMainView('friends-dms');
+    }
+
+    function sendPrivateDM(event) {
+      event.preventDefault();
+      if (!currentUser || !activeDmPartnerId) return;
+      if (!areFriends(currentUser.id, activeDmPartnerId)) {
+        showSystemDialog('Not Friends', 'Both users must follow each other to send private DMs.');
+        return;
+      }
+
+      const input = document.getElementById('dm-message-input');
+      if (!input) return;
+      const text = input.value.trim();
+      if (!text) return;
+
+      const blocked = containsBlacklistedWord(text);
+      if (blocked) {
+        showSystemDialog('Message Blocked', 'Your message contains a word restricted by the platform blacklist.');
+        return;
+      }
+
+      directMessages.push({
+        id: 'dm_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+        senderId: currentUser.id,
+        recipientId: activeDmPartnerId,
+        text: text,
+        read: false,
+        createdAt: new Date().toISOString()
+      });
+      saveDirectMessages();
+      input.value = '';
+      renderFriendsAndDMs();
+    }
+
+    function renderFriendsAndDMs() {
+      const container = document.getElementById('friends-dms-container');
+      if (!container) return;
+
+      if (!currentUser) {
+        container.innerHTML = `<div class="p-5 rounded-lg bg-white/80 border border-[#9ac6ed] text-center text-xs text-[#356396]">Please log in to view your friends and send private DMs.</div>`;
+        return;
+      }
+
+      const rels = getUserRelationships(currentUser.id);
+      const friendsList = rels.friends;
+
+      if (friendsList.length === 0) {
+        activeDmPartnerId = '';
+        container.innerHTML = `
+          <div class="p-5 rounded-lg bg-white/85 border border-[#9ac6ed] text-center space-y-2">
+            <p class="text-sm font-bold text-[#093e85]">No Mutual Friends Yet</p>
+            <p class="text-xs text-[#376699]">Follow members in the Member Directory or on posts. When someone you follow follows you back, you become friends and unlock private DMs here!</p>
+            <button type="button" onclick="switchMainView('members')" class="aqua-btn aqua-btn-blue mt-1">Browse Member Directory</button>
+          </div>
+        `;
+        return;
+      }
+
+      if (!activeDmPartnerId || !friendsList.some(f => f.id === activeDmPartnerId)) {
+        activeDmPartnerId = friendsList[0].id;
+      }
+
+      const partner = friendsList.find(f => f.id === activeDmPartnerId);
+
+      // Mark incoming DMs from active partner as read
+      let markedRead = false;
+      directMessages.forEach(m => {
+        if (m.senderId === activeDmPartnerId && m.recipientId === currentUser.id && !m.read) {
+          m.read = true;
+          markedRead = true;
+        }
+      });
+      if (markedRead) {
+        saveDirectMessages();
+        updateUnreadBadge();
+      }
+
+      const thread = directMessages.filter(m =>
+        (m.senderId === currentUser.id && m.recipientId === activeDmPartnerId) ||
+        (m.senderId === activeDmPartnerId && m.recipientId === currentUser.id)
+      );
+
+      container.innerHTML = `
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+          <!-- Friends List Sidebar -->
+          <div class="sm:col-span-4 space-y-1.5 border-b sm:border-b-0 sm:border-r border-[#b8dbf7] pb-2.5 sm:pb-0 sm:pr-2.5">
+            <p class="text-[11px] font-bold text-[#0c4185] uppercase">Your Friends (${friendsList.length})</p>
+            <div class="space-y-1 max-h-80 overflow-y-auto">
+              ${friendsList.map(f => {
+                const isSelected = f.id === activeDmPartnerId;
+                const unreadFromFriend = directMessages.filter(m => m.senderId === f.id && m.recipientId === currentUser.id && !m.read).length;
+                return `
+                  <button type="button" onclick="openDmWithUser('${f.id}')" class="w-full text-left p-2 rounded-lg border flex items-center justify-between gap-2 transition ${isSelected ? 'bg-[#cce7ff] border-[#1877e8] font-bold' : 'bg-white/80 border-[#a8cff2] hover:bg-[#e8f4ff]'}">
+                    <div class="flex items-center gap-2 min-w-0">
+                      <img src="${f.avatar || DEFAULT_AVATAR_SVG}" alt="${escapeHTML(f.displayName)}" class="w-7 h-7 rounded border border-[#3e95eb] object-cover shrink-0" />
+                      <div class="min-w-0">
+                        <div class="text-xs text-[#073778] truncate">${escapeHTML(f.displayName)}</div>
+                        <div class="text-[10px] font-mono text-[#4572a6] truncate">@${escapeHTML(f.username)}</div>
+                      </div>
+                    </div>
+                    ${unreadFromFriend > 0 ? `<span class="px-1.5 py-0.2 bg-[#e02414] text-white text-[10px] rounded-full font-bold">${unreadFromFriend}</span>` : ''}
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- Active Private Chat Window -->
+          <div class="sm:col-span-8 flex flex-col justify-between bg-white/88 rounded-lg border border-[#8abcf0] p-3 min-h-[300px]">
+            <div class="flex items-center justify-between gap-2 border-b border-[#cde5fa] pb-2 mb-2">
+              <div class="flex items-center gap-2 min-w-0">
+                <img src="${partner.avatar || DEFAULT_AVATAR_SVG}" alt="${escapeHTML(partner.displayName)}" class="w-8 h-8 rounded-lg border border-[#3e95eb] object-cover shrink-0" />
+                <div class="min-w-0">
+                  <div class="text-xs font-bold text-[#073778] truncate">${escapeHTML(partner.displayName)} <span class="font-mono font-normal text-[#4572a6]">(@${escapeHTML(partner.username)})</span></div>
+                  <div class="text-[10px] text-[#198c0c] font-semibold">Private Friend Chat</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex-1 space-y-2 max-h-64 overflow-y-auto pr-1 mb-2.5">
+              ${thread.length === 0 ? `
+                <p class="text-xs text-[#4572a6] italic text-center py-8">No private messages with ${escapeHTML(partner.displayName)} yet. Say hi!</p>
+              ` : thread.map(msg => {
+                const mine = msg.senderId === currentUser.id;
+                return `
+                  <div class="flex flex-col ${mine ? 'items-end' : 'items-start'}">
+                    <div class="max-w-[82%] px-3 py-1.5 rounded-lg text-xs break-words shadow-2xs ${mine ? 'bg-[#1877e8] text-white' : 'bg-[#eef7ff] border border-[#b5d8f7] text-[#0f2947]'}">
+                      ${escapeHTML(msg.text)}
+                    </div>
+                    <span class="text-[9px] text-[#527fb0] mt-0.5">${formatTimestamp(msg.createdAt)}</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+
+            <form onsubmit="sendPrivateDM(event)" class="flex gap-1.5 pt-1 border-t border-[#cde5fa]">
+              <input type="text" id="dm-message-input" placeholder="Send a private message to ${escapeHTML(partner.displayName)}..." class="aero-input !py-1.5 !text-xs" required />
+              <button type="submit" class="aqua-btn aqua-btn-green !py-1 !px-3 shrink-0">Send</button>
+            </form>
+          </div>
+        </div>
+      `;
+    }
+
+    function refreshAllUI() {
+      applySiteConfigToDOM();
+      renderAccountSidebar();
+      renderUnifiedSearch();
+      renderPostsFeed();
+      renderPinboard();
+      updateTelemetryStats();
+      if (!document.getElementById('view-members').classList.contains('hidden')) renderMembersDirectory();
+      if (!document.getElementById('view-inbox').classList.contains('hidden')) renderInbox();
+      if (!document.getElementById('view-my-profile').classList.contains('hidden')) renderMyProfile();
+      if (!document.getElementById('view-friends-dms').classList.contains('hidden')) renderFriendsAndDMs();
+      if (!document.getElementById('view-staff').classList.contains('hidden')) renderStaffStudio();
+      if (!document.getElementById('view-owner-customizer').classList.contains('hidden')) renderOwnerCustomizer();
+    }
+
+    window.addEventListener('click', (e) => {
+      const startMenu = document.getElementById('xp-start-menu');
+      const startBtn = document.querySelector('.xp-start-btn');
+      if (startMenu && !startMenu.classList.contains('hidden') && !startMenu.contains(e.target) && !startBtn.contains(e.target)) {
+        toggleStartMenu(false);
+      }
+    });
+
+    window.onload = function() {
+      loadAllData();
+      spawnAeroBubbles();
+      updateTaskbarClock();
+      setInterval(updateTaskbarClock, 15000);
+      refreshAllUI();
+    };
+  </script>
+</body>
+</html>
